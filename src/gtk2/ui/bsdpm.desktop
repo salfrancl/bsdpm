@@ -1,0 +1,16 @@
+[Desktop Entry]
+Version=1.0
+Name=BSD Ports/Packages Manager
+Name[en_CA]=BSD Ports/Packages Manager
+Name[en_GB]=BSD Ports/Packages Manager
+Name[es]=Administrador de Ports/Paquetes BSD
+Comment=Install, deinstall, upgrade and search ports and packages on your preferred BSD Ports/Package Repository
+Comment[en_CA]=Install, deinstall, upgrade and search ports and packages on your preferred BSD Ports/Package Repository
+Comment[en_GB]=Install, deinstall, upgrade and search ports and packages on your preferred BSD Ports/Package Repository
+Comment[es]=Instale, desinstale, actualice y busque ports y paquetes en su Repositorio de Ports/Paquetes BSD preferido
+Exec=bsdpm -I gtk
+Icon=bsdpm-application
+Terminal=false
+Type=Application
+Categories=GNOME;GTK;System;Settings;
+StartupNotify=true

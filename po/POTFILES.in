@@ -1,0 +1,6 @@
+# List of source files containing translatable strings.
+
+src/main.c
+src/core/core.c
+src/gtk/gtk_main.c
+src/gtk/gtk_callbacks.c

@@ -1,0 +1,898 @@
+# Traducción española para BSD Package Manager
+# Copyright (C) 2010 the BSD Package Manager team
+# $Id$
+#
+# Leinier Cruz Salfran <salfrancl@yahoo.es>, 2010
+msgid ""
+msgstr ""
+"Project-Id-Version: bsdpm\n"
+"Report-Msgid-Bugs-To: bsdpm-devel@\n"
+"POT-Creation-Date: 2010-23-03 20:30-0500\n"
+"PO-Revision-Date: 2010-23-03 20:30-0500\n"
+"Last-Translator: Leinier Cruz Salfran <salfrancl@yahoo.es>\n"
+"Language-Team: English-Spanish\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-SourceCharset: utf-8\n"
+
+msgid "BSD Ports/Packages Manager"
+msgstr "Administrador de Portes/Paquetes BSD"
+
+msgid "BSD Ports Manager"
+msgstr "Administrador de Portes BSD"
+
+msgid "Ports"
+msgstr "Portes"
+
+msgid "Port"
+msgstr "Porte"
+
+msgid "BSD Packages Manager"
+msgstr "Administrador de Paquetes BSD"
+
+msgid "Packages"
+msgstr "Paquetes"
+
+msgid "Package"
+msgstr "Paquete"
+
+msgid "Usage"
+msgstr "Uso"
+
+msgid "OPTION"
+msgstr "OPCIÓN"
+
+msgid "Examples"
+msgstr "Ejemplos"
+
+msgid "Options"
+msgstr "Opciones"
+
+msgid "Show this help messages"
+msgstr "Muestra estos mensajes de ayuda"
+
+msgid "Set an alternative configuration file"
+msgstr "Establece un archivo de configuración alternativo"
+
+msgid "Recreate the BSDPM database"
+msgstr "Recrea la base de datos de BSDPM"
+
+msgid "Search on the BSDPM database"
+msgstr "Busca en la base de datos de BSDPM"
+
+msgid "Install port(s)/package(s)"
+msgstr "Instalar porte(s)/paquete(s)"
+
+msgid "Deinstall port(s)/package(s)"
+msgstr "Desinstalar porte(s)/paquete(s)"
+
+msgid "Upgrade the whole system"
+msgstr "Actualiza todo el sistema completo"
+
+msgid "Mode to use"
+msgstr "Modo a usar"
+
+msgid "only ports (default)"
+msgstr "solo ports (predeterminado)"
+
+msgid "only packages"
+msgstr "solo paquetes"
+
+msgid "Start BSDPM with a graphical user interface"
+msgstr "Inicia BSDPM con una interfaz gráfica de usuario"
+
+msgid "Updating packages list..."
+msgstr "Actualizando la lista de paquetes..."
+
+msgid "Updating ports list..."
+msgstr "Actualizando la lista de portes..."
+
+msgid "Downloading..."
+msgstr "Descargando..."
+
+msgid "Can't download INDEX file"
+msgstr "No se puede descargar el archivo INDEX"
+
+msgid "Extracting..."
+msgstr "Extrayendo..."
+
+msgid "Can't extract compressed INDEX file"
+msgstr "No se puede descomprimir el archivo INDEX"
+
+msgid "Processing INDEX file..."
+msgstr "Procesando el archivo INDEX..."
+
+msgid "Can't process INDEX file"
+msgstr "No se puede procesar el archivo INDEX"
+
+msgid "INDEX file is invalid, there is not access or doesn't exists"
+msgstr "El archivo INDEX es inválido, no tiene acceso o no existe"
+
+msgid "INDEX can't be openned"
+msgstr "No se puede abrir el archivo INDEX"
+
+msgid "Done"
+msgstr "Hecho"
+
+msgid "ERROR"
+msgstr "ERROR"
+
+msgid "Can't download package"
+msgstr "No se puede descargar el paquete"
+
+msgid "The file can't be downloaded"
+msgstr "El archivo no puede ser descargado"
+
+msgid "of"
+msgstr "de"
+
+msgid "Starting search"
+msgstr "Comenzando la búsqueda"
+
+msgid "Search ended"
+msgstr "La búsqueda ha terminado"
+
+msgid "ID"
+msgstr "ID"
+
+msgid "State"
+msgstr "Estado"
+
+msgid "Uninstalled"
+msgstr "Desinstalado"
+
+msgid "Installed"
+msgstr "Instalado"
+
+msgid "Upgradable"
+msgstr "Actualizable"
+
+msgid "Distribution name"
+msgstr "Nombre de distribución"
+
+msgid "Available version"
+msgstr "Versión disponible"
+
+msgid "Installed version"
+msgstr "Versión instalada"
+
+msgid "Port path"
+msgstr "Ruta del porte"
+
+msgid "Comment"
+msgstr "Comentario"
+
+msgid "Maintainer"
+msgstr "Mantenedor"
+
+msgid "WWW"
+msgstr "Sitio web"
+
+msgid "Invalid search criteria"
+msgstr "Criterio de búsqueda no válido"
+
+msgid "Search has no result(s)"
+msgstr "La búsqueda no tuvo resultado(s)"
+
+msgid "Starting installation"
+msgstr "Comenzando la instalación"
+
+msgid "NOT FOUND"
+msgstr "NO ENCONTRADO"
+
+
+
+msgid "_File"
+msgstr "_Archivo"
+
+msgid "_Refresh"
+msgstr "_Actualizar"
+
+msgid "Refresh the packages list"
+msgstr "Actualiza la lista de paquetes"
+
+msgid "_Load configuration"
+msgstr "_Cargar configuración"
+
+msgid "_Save configuration"
+msgstr "_Guardar configuración"
+
+msgid "Save configuration _as"
+msgstr "Guardar configuración c_omo"
+
+msgid "_Edit"
+msgstr "_Editar"
+
+msgid "_Upgradable"
+msgstr "_Actualizables"
+
+msgid "Select all _upgradable"
+msgstr "Seleccionar todos los _actualizables"
+
+msgid "Select all upgradable packages on current list"
+msgstr "Selecciona todos los paquetes actualizables en la lista actual"
+
+msgid "_Invert selection"
+msgstr "_Invertir la selección"
+
+msgid "Select _none"
+msgstr "Seleccionar _ninguno"
+
+msgid "Select _all"
+msgstr "Seleccionar _todos"
+
+msgid "_Package"
+msgstr "_Paquete"
+
+msgid "_Install"
+msgstr "_Instalar"
+
+msgid "_Install package(s)"
+msgstr "_Instalar paquete(s)"
+
+msgid "Install selected packages"
+msgstr "Instala los paquetes seleccionados"
+
+msgid "_Uninstall"
+msgstr "_Desinstalar"
+
+msgid "_Uninstall package(s)"
+msgstr "_Desinstalar paquete(s)"
+
+msgid "Uninstall selected packages"
+msgstr "Desinstala los paquetes seleccionados"
+
+msgid "_Information"
+msgstr "I_nformación"
+
+msgid "Show package _info"
+msgstr "Mostrar i_nformación del paquete"
+
+msgid "Show information about selected package"
+msgstr "Mostrar información acerca del paquete seleccionado"
+
+msgid "_Help"
+msgstr "Ay_uda"
+
+msgid "Categories"
+msgstr "Categorías"
+
+msgid "Category"
+msgstr "Categoría"
+
+msgid "Group"
+msgstr "Grupo"
+
+msgid "Description"
+msgstr "Descripción"
+
+msgid "<b>Screenshot</b>"
+msgstr "<b>Pantallazo</b>"
+
+msgid "all"
+msgstr "todos"
+
+msgid "uninstalled"
+msgstr "no_instalados"
+
+msgid "installed"
+msgstr "instalados"
+
+msgid "upgradable"
+msgstr "actualizables"
+
+msgid "searches"
+msgstr "búsquedas"
+
+msgid "end-users"
+msgstr "usuarios-finales"
+
+msgid "accessibility"
+msgstr "accesibilidad"
+
+msgid "audio"
+msgstr "audio"
+
+msgid "deskutils"
+msgstr "útiles-escritorio"
+
+msgid "editors"
+msgstr "editores"
+
+msgid "finance"
+msgstr "financia"
+
+msgid "games"
+msgstr "juegos"
+
+msgid "graphics"
+msgstr "gráficos"
+
+msgid "multimedia"
+msgstr "multimedia"
+
+msgid "net-p2p"
+msgstr "red-p2p"
+
+msgid "print"
+msgstr "impresión"
+
+msgid "shells"
+msgstr "consolas"
+
+msgid "textproc"
+msgstr "proc-texto"
+
+msgid "sysadmins"
+msgstr "admins-sistemas"
+
+msgid "archivers"
+msgstr "archivadores"
+
+msgid "databases"
+msgstr "basedatos"
+
+msgid "devel"
+msgstr "desarrollo"
+
+msgid "emulators"
+msgstr "emuladores"
+
+msgid "java"
+msgstr "java"
+
+msgid "lang"
+msgstr "lenguaje"
+
+msgid "ports-mgmt"
+msgstr "admin-ports"
+
+msgid "security"
+msgstr "seguridad"
+
+msgid "sysutils"
+msgstr "útiles-sistema"
+
+msgid "comms"
+msgstr "comunicaciones"
+
+msgid "dns"
+msgstr "dns"
+
+msgid "ftp"
+msgstr "ftp"
+
+msgid "irc"
+msgstr "irc"
+
+msgid "mail"
+msgstr "correo"
+
+msgid "mbone"
+msgstr "mbone"
+
+msgid "net"
+msgstr "red"
+
+msgid "net-im"
+msgstr "red-mi"
+
+msgid "net-mgmt"
+msgstr "red-admin"
+
+msgid "news"
+msgstr "noticias"
+
+msgid "www"
+msgstr "www"
+
+msgid "x-window"
+msgstr "x-window"
+
+msgid "x11"
+msgstr "x11"
+
+msgid "x11-clocks"
+msgstr "x11-relojes"
+
+msgid "x11-drivers"
+msgstr "x11-controladores"
+
+msgid "x11-fm"
+msgstr "x11-fm"
+
+msgid "x11-fonts"
+msgstr "x11-fuentes"
+
+msgid "x11-servers"
+msgstr "x11-servidores"
+
+msgid "x11-themes"
+msgstr "x11-temas"
+
+msgid "x11-toolkits"
+msgstr "x11-kits_herramientas"
+
+msgid "x11-wm"
+msgstr "x11-wm"
+
+msgid "astro"
+msgstr "astrología"
+
+msgid "biology"
+msgstr "biología"
+
+msgid "cad"
+msgstr "cad"
+
+msgid "math"
+msgstr "matemáticas"
+
+msgid "science"
+msgstr "ciencia"
+
+msgid "languages"
+msgstr "idiomas"
+
+msgid "arabic"
+msgstr "arábico"
+
+msgid "chinese"
+msgstr "chino"
+
+msgid "french"
+msgstr "francés"
+
+msgid "german"
+msgstr "alemán"
+
+msgid "hebrew"
+msgstr "hebreo"
+ 
+msgid "hungarian"
+msgstr "húngaro"
+
+msgid "japanese"
+msgstr "japonés"
+
+msgid "korean"
+msgstr "koreano"
+
+msgid "polish"
+msgstr "polandés"
+
+msgid "portuguese"
+msgstr "portugués"
+
+msgid "russian"
+msgstr "ruso"
+
+msgid "spanish"
+msgstr "español"
+ 
+msgid "ukrainian"
+msgstr "ukraniano"
+
+msgid "vietnamese"
+msgstr "vietnamés"
+
+msgid "afterstep"
+msgstr "afterstep"
+
+msgid "virtuals"
+msgstr "virtuales"
+
+msgid "docs"
+msgstr "documentación"
+
+msgid "elisp"
+msgstr "elisp"
+
+msgid "geography"
+msgstr "geografía"
+
+msgid "gnome"
+msgstr "gnome"
+
+msgid "gnustep"
+msgstr "gnustep"
+
+msgid "hamradio"
+msgstr "hamradio"
+
+msgid "haskell"
+msgstr "haskell"
+
+msgid "ipv6"
+msgstr "ipv6"
+
+msgid "kde"
+msgstr "kde"
+
+msgid "kld"
+msgstr "kld"
+
+msgid "linux"
+msgstr "linux"
+
+msgid "lisp"
+msgstr "lisp"
+
+msgid "parallel"
+msgstr "paralelo"
+
+msgid "pear"
+msgstr "pear"
+
+msgid "perl5"
+msgstr "perl5"
+
+msgid "plan9"
+msgstr "plan9"
+
+msgid "python"
+msgstr "python"
+
+msgid "ruby"
+msgstr "ruby"
+
+msgid "rubygems"
+msgstr "rubygems"
+
+msgid "scheme"
+msgstr "scheme"
+
+msgid "tcl"
+msgstr "tcl"
+
+msgid "tk"
+msgstr "tk"
+
+msgid "windowmaker"
+msgstr "windowmaker"
+
+msgid "xfce"
+msgstr "xfce"
+
+msgid "zope"
+msgstr "zope"
+
+msgid "other"
+msgstr "otros"
+
+msgid "benchmarks"
+msgstr "mediciones"
+
+msgid "converters"
+msgstr "convertidores"
+
+msgid "misc"
+msgstr "misceláneo"
+
+msgid "palm"
+msgstr "palm"
+
+msgid "unknown"
+msgstr "desconocido"
+
+msgid "Show all packages"
+msgstr "Muestra todos los paquetes"
+
+msgid "Show all uninstalled packages"
+msgstr "Muestra todos los paquetes no instalados"
+
+msgid "Show all installed packages"
+msgstr "Muestra todos los paquetes instalados"
+
+msgid "Show all upgradable packages"
+msgstr "Muestra todos los paquetes actualizables"
+
+msgid "Packages matching searching criteria"
+msgstr "Paquetes que coinciden con los criterios de búsqueda"
+
+msgid "Packages matching with:"
+msgstr "Paquetes que coinciden con:"
+
+msgid "Packages primarily for end-users"
+msgstr "Paquetes primariamente para usuarios finales"
+
+msgid "Packages to help disabled users"
+msgstr "Paquetes para ayudar a usuarios discapacitados"
+
+msgid "Audio utilities - most require a supported sound card"
+msgstr "Utilidades de audio - la mayoría requieren una tarjeta de sonido compatible"
+
+msgid "Various desktop utilities"
+msgstr "Utilidades variadas de escritorio"
+
+msgid "Common text editors"
+msgstr "Editores de textos comúnes"
+
+msgid "Monetary, financial and related applications"
+msgstr "Aplicaciones monetarias, financieras y relacionadas"
+
+msgid "Various and sundry amusements"
+msgstr "Varios y diversos entretenimientos"
+
+msgid "Graphics libraries and utilities"
+msgstr "Bibliotecas y utilidades gráficas"
+
+msgid "Multimedia software"
+msgstr "Programas multimedia"
+
+msgid "Peer to peer networking software"
+msgstr "Programas para el intercambio punto a punto"
+
+msgid "Utilities for dealing with printing"
+msgstr "Utilidades para negociar con la impresión"
+
+msgid "Various shells (tcsh, bash, etc)"
+msgstr "Varias consolas (tcsh, bash, etc)"
+
+msgid "Text processing/search utilities"
+msgstr "Procesamiento de texto/utilidades de búsqueda"
+
+msgid "Packages primarily for system administrators and developers"
+msgstr "Paquetes primariamente para administradores de sistemas y desarrolladores"
+
+msgid "Utilities for archiving and unarchiving data"
+msgstr "Utilidades para la archivar y desarchivar datos"
+
+msgid "Database software"
+msgstr "Programas para base de datos"
+
+msgid "Software development utilities and libraries"
+msgstr "Programas para el desarrollo de utilidades y bibliotecas"
+
+msgid "Utilities for emulating other os types"
+msgstr "Utilidades para la emulación de otros tipos de SO"
+
+msgid "Java language support"
+msgstr "Soporte para el lenguaje Java"
+
+msgid "Computer languages"
+msgstr "Lenguajes de computadora"
+
+msgid "Utilities for managing ports and packages"
+msgstr "Utilidades para administrar ports y paquetes"
+
+msgid "System security software"
+msgstr "Programas para la seguridad del sistema"
+
+msgid "Various system utilities"
+msgstr "Varias utilidades del sistema"
+
+msgid "Packages relating to computer communications and the Internet"
+msgstr "Paquetes relacionados a las comunicaciones de computadoras y la Internet"
+
+msgid "Communications utilities"
+msgstr "Utilidades para la comunicación"
+
+msgid "DNS client and server utilities"
+msgstr "Utilidades para cliente y servidor DNS"
+
+msgid "FTP client and server utilities"
+msgstr "Utilidades para cliente y servidor FTP"
+
+msgid "Internet Relay Chat utilities"
+msgstr "Utilidades para Internet Relay Chat"
+
+msgid "Electronic mail packages and utilities"
+msgstr "Paquetes de correo electrónico y utilidades"
+
+msgid "Applications and utilities for the mbone"
+msgstr "Aplicaciones y utilidades para el mbone"
+
+msgid "Networking utilities"
+msgstr "Utilidades de redes"
+
+msgid "Instant messaging software"
+msgstr "Programas para la mensajería instantánea"
+
+msgid "Network management utilities"
+msgstr "Utilidades para la administración de la red"
+
+msgid "Usenet news support software"
+msgstr "Programas para el soporte de noticias Usenet"
+
+msgid "Web utilities (browsers, http servers, etc)"
+msgstr "Utilidades para el web (navegadores, servidores HTTP, etc)"
+
+msgid "Packages relating to the X window system"
+msgstr "Paquetes relacionados al sistema Ventana X"
+
+msgid "X Window system based utilities"
+msgstr "Utilidades basadas en el sistema Ventana X"
+
+msgid "X Window system based clocks"
+msgstr "Relojes basados en el sistema Ventana X"
+
+msgid "X Window system drivers"
+msgstr "Controladores basados en el sistema Ventana X"
+
+msgid "X Window system based file managers"
+msgstr "Administradores de archivos basados en el sistema Ventana X"
+
+msgid "X Window system fonts and font utilities"
+msgstr "Fuentes y utilidades de fuentes basadas en el sistema Ventana X"
+
+msgid "X Window system servers"
+msgstr "Servidores del sistema Ventana X"
+
+msgid "X Window system themes"
+msgstr "Temas del sistema Ventana X"
+
+msgid "X Window system based development toolkits"
+msgstr "Kits de herramientas para el desarrollo basadas en el sistema Ventana X"
+
+msgid "X Window system window managers"
+msgstr "Administradores de ventana del sistema Ventana X"
+
+msgid "Packages relating to science and engineering"
+msgstr "Paquetes relacionados a la ciencia y la ingeniería"
+
+msgid "Applications related to astronomy"
+msgstr "Aplicaciones relacionadas con la astronomía"
+
+msgid "Software related to biology"
+msgstr "Programas relacionados con la biología"
+
+msgid "Computer aided design utilities"
+msgstr "Utilidades de diseño asistido por computadora"
+
+msgid "Mathematical computation software"
+msgstr "Programas para el cómputo matemático"
+
+msgid "Scientific software"
+msgstr "Programas científicos"
+
+msgid "Packages relating to human languages"
+msgstr "Paquetes relacionados a los idiomas humanos"
+
+msgid "Ported software for the arabic market"
+msgstr "Programas portados para el mercado arábico"
+
+msgid "Ported software for the chinese market"
+msgstr "Programas portados para el mercado chino"
+
+msgid "Ported software for the french countries"
+msgstr "Programas portados para los países franceses"
+
+msgid "Ported software for the germanic countries"
+msgstr "Programas portados para los países alemanes"
+
+msgid "Ported software for the hebrew language"
+msgstr "Programas portados para el idioma hebreo"
+ 
+msgid "Ported software for the hungarian market"
+msgstr "Programas portados para el mercado húngaro"
+
+msgid "Ported software for the japanese market"
+msgstr "Programas portados para el mercado japonés"
+
+msgid "Ported software for the korean market"
+msgstr "Programas portados para el mercado koreano"
+
+msgid "Ported software for the polish market"
+msgstr "Programas portados para el mercado polandes"
+
+msgid "Ported software for the portuguese market"
+msgstr "Programas portados para el mercado portugués"
+
+msgid "Ported software for the russian market"
+msgstr "Programas portados para el mercado ruso"
+
+msgid "Ported software for the spanish market"
+msgstr "Programas portados para el mercado español"
+ 
+msgid "Ported software for the ukrainian market"
+msgstr "Programas portados para el mercado ukraniano"
+
+msgid "Ported software for the vietnamese market"
+msgstr "Programas portados para el mercado vietnamés"
+
+msgid "Packages in virtual categories (secondary groupings to above)"
+msgstr "Paquetes en categorías virtuales (agrupaciones secundarias a las anteriores)"
+
+msgid "Packages to support the afterstep window manager"
+msgstr "Paquetes para soportar el administrador de ventanas AfterStep"
+
+msgid "Meta-packages for freebsd documentation"
+msgstr "Meta-paquetes para la documentación FreeBSD"
+
+msgid "Things related to Emacs LISP"
+msgstr "Cosas relacionadas a Emacs LISP"
+
+msgid "Geography related packages"
+msgstr "Paquetes relationes con la geografía"
+
+msgid "Components of the GNOME Desktop Environment"
+msgstr "Componentes del Entorno de Escritorio GNOME"
+
+msgid "Software for GNUStep Desktop Environment"
+msgstr "Programas para el Entorno de Escritorio GNUStep"
+
+msgid "Software for amateur radio"
+msgstr "Programas para radio amateur"
+
+msgid "Software related to the Haskell language"
+msgstr "Programas relacionados al lenguaje Haskell"
+
+msgid "IPv6 related software"
+msgstr "Programas relacionados con IPv6"
+
+msgid "Software for the K Desktop Environment"
+msgstr "Programas para el Entorno de Escritorio K"
+
+msgid "Kernel loadable modules"
+msgstr "Módulos cargables del Kernel"
+
+msgid "Linux programs that can be run under binary compatibility"
+msgstr "Programas Linux que pueden correr bajo la compatibilidad binaria"
+
+msgid "Things related to pure LISP"
+msgstr "Cosas relacionadas a LISP puro"
+
+msgid "Applications dealing with parallelism in computing"
+msgstr "Aplicaciones para tratar con el paralelismo en el cómputo"
+
+msgid "Utilities/Modules that fall into the pear system"
+msgstr "Utilidades/Módulos que caen dentro del sistema PEAR"
+
+msgid "Utilities/Modules for the perl5 language"
+msgstr "Utilidades/Módulos para el lenguaje Perl5"
+
+msgid "Software from the Plan9 operating system"
+msgstr "Programas del sistema operativo Plan9"
+
+msgid "Software related to the Python language"
+msgstr "Programas relacionados al lenguaje Python"
+
+msgid "Software related to the Ruby language"
+msgstr "Programas relacionados al lenguaje Ruby"
+
+msgid "Packages for the rubygems system"
+msgstr "Paquetes para el sistema RubyGems"
+
+msgid "Software related to the Scheme language"
+msgstr "Programas relacionados al lenguaje Scheme"
+
+msgid "TCL and packages which depend on it"
+msgstr "TCL y los paquetes que dependen de él"
+
+msgid "TK and packages which depend on it"
+msgstr "TK  y los paquetes que dependen de é"
+
+msgid "Packages to support the WindowMaker window manager"
+msgstr "Paquetes para soportar el administrador de ventana WindowMaker"
+
+msgid "Packages to support the XFCE Desktop Environment"
+msgstr "Paquetes para soportar el Entorno de Escritorio XFCE"
+
+msgid "Software related to the Zope platform"
+msgstr "Programas relacionados a la plataforma Zope"
+
+msgid "All other packages"
+msgstr "Todos los demás paquetes"
+
+msgid "Utilities for measuring system performance"
+msgstr "Utilidades para la medición del rendimiento del sistema"
+
+msgid "Format conversion utilities"
+msgstr "Utilidades de conversión de formato"
+
+msgid "Miscellaneous utilities"
+msgstr "Utilidades misceláneas"
+
+msgid "Software support for the Palm(TM) series"
+msgstr "Programas para soportar las series Palm(TM)"
+ 
+msgid "Packages that belongs to unknown category"
+msgstr "Paquetes que corresponden a una categoría desconocida"
+
+
+
+#msgid ""
+#msgstr ""
+

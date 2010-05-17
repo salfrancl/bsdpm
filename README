@@ -1,0 +1,17 @@
+README for the BSD Ports/Packages Manager
+=========================================
+
+The BSDPM web site  . . . . http://salfrancl.github.org/bsdpm/
+Documentation . . . . . . . http://salfrancl.github.org/bsdpm/doc/
+Support . . . . . . . . . . http://salfrancl.github.org/bsdpm/support/
+Wiki  . . . . . . . . . . . http://wiki.github.com/salfrancl/bsdpm/
+The Developers site . . . . http://github.com/salfrancl/bsdpm
+
+ABOUT-NLS          - Notes on the Free Translation Project.
+AUTHORS            - Main BSDPM authors.
+COPYING            - The BSD license.
+ChangeLog          - The BSDPM ChangeLog.
+INSTALL            - Installation instructions.
+NEWS               - Important modifications between the releases.
+README             - This file.
+THANKS             - All BSDPM donators and contributors.

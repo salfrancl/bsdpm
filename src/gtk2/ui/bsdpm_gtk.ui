@@ -1,0 +1,752 @@
+<?xml version="1.0"?>
+<interface>
+  <requires lib="gtk+" version="2.16"/>
+  <!-- interface-naming-policy project-wide -->
+  <object class="GtkTextBuffer" id="textbuffer_package_description"/>
+  <object class="GtkListStore" id="liststore_packages">
+    <columns>
+      <!-- column-name state -->
+      <column type="gchararray"/>
+      <!-- column-name distribution_name -->
+      <column type="gchararray"/>
+      <!-- column-name available_version -->
+      <column type="gchararray"/>
+      <!-- column-name installed_version -->
+      <column type="gchararray"/>
+      <!-- column-name port_path -->
+      <column type="gchararray"/>
+      <!-- column-name comment -->
+      <column type="gchararray"/>
+      <!-- column-name description_file -->
+      <column type="gchararray"/>
+      <!-- column-name maintainer -->
+      <column type="gchararray"/>
+      <!-- column-name www_site -->
+      <column type="gchararray"/>
+      <!-- column-name tooltip -->
+      <column type="gchararray"/>
+    </columns>
+  </object>
+  <object class="GtkTreeStore" id="liststore_categories">
+    <columns>
+      <!-- column-name icon -->
+      <column type="gchararray"/>
+      <!-- column-name name -->
+      <column type="gchararray"/>
+      <!-- column-name description -->
+      <column type="gchararray"/>
+      <!-- column-name search_criteria -->
+      <column type="gchararray"/>
+      <!-- column-name bsdpm_tooltip -->
+      <column type="gchararray"/>
+    </columns>
+  </object>
+  <object class="GtkWindow" id="main_window">
+    <property name="width_request">760</property>
+    <property name="height_request">560</property>
+    <property name="visible">True</property>
+    <property name="title" translatable="yes">BSD Ports/Packages Manager</property>
+    <property name="icon_name">bsdpm-application</property>
+    <signal name="destroy" handler="bsdpm_gtk2_callback_destroy"/>
+    <child>
+      <object class="GtkVBox" id="vbox">
+        <property name="visible">True</property>
+        <property name="orientation">vertical</property>
+        <child>
+          <object class="GtkMenuBar" id="menubar">
+            <property name="visible">True</property>
+            <child>
+              <object class="GtkMenuItem" id="menubar_file">
+                <property name="visible">True</property>
+                <property name="label" translatable="yes">_File</property>
+                <property name="use_underline">True</property>
+                <child type="submenu">
+                  <object class="GtkMenu" id="menubar_file_m">
+                    <property name="visible">True</property>
+                    <child>
+                      <object class="GtkImageMenuItem" id="menubar_file_refresh">
+                        <property name="label" translatable="yes">_Refresh</property>
+                        <property name="visible">True</property>
+                        <property name="use_underline">True</property>
+                        <property name="image">image_refresh</property>
+                        <property name="use_stock">False</property>
+                        <signal name="activate" handler="bsdpm_gtk2_on_menubar_file_refresh_activate"/>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkSeparatorMenuItem" id="menubar_file_smi01">
+                        <property name="visible">True</property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkImageMenuItem" id="menubar_file_load">
+                        <property name="label" translatable="yes">_Load configuration</property>
+                        <property name="visible">True</property>
+                        <property name="use_underline">True</property>
+                        <property name="image">image_open</property>
+                        <property name="use_stock">False</property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkImageMenuItem" id="menubar_file_save">
+                        <property name="label" translatable="yes">_Save configuration</property>
+                        <property name="visible">True</property>
+                        <property name="use_underline">True</property>
+                        <property name="image">image_save</property>
+                        <property name="use_stock">False</property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkImageMenuItem" id="menubar_file_saveas">
+                        <property name="label" translatable="yes">Save configuration _as</property>
+                        <property name="visible">True</property>
+                        <property name="use_underline">True</property>
+                        <property name="image">image_saveas</property>
+                        <property name="use_stock">False</property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkSeparatorMenuItem" id="menubar_file_smi02">
+                        <property name="visible">True</property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkImageMenuItem" id="menubar_file_quit">
+                        <property name="label">gtk-quit</property>
+                        <property name="visible">True</property>
+                        <property name="use_underline">True</property>
+                        <property name="use_stock">True</property>
+                        <signal name="activate" handler="bsdpm_gtk2_on_menubar_file_quit_activate"/>
+                      </object>
+                    </child>
+                  </object>
+                </child>
+              </object>
+            </child>
+            <child>
+              <object class="GtkMenuItem" id="menubar_edit">
+                <property name="visible">True</property>
+                <property name="label" translatable="yes">_Edit</property>
+                <property name="use_underline">True</property>
+                <child type="submenu">
+                  <object class="GtkMenu" id="menubar_edit_m">
+                    <property name="visible">True</property>
+                    <child>
+                      <object class="GtkImageMenuItem" id="menubar_edit_selupg">
+                        <property name="label" translatable="yes">Select all _upgradable</property>
+                        <property name="visible">True</property>
+                        <property name="use_underline">True</property>
+                        <property name="image">image_selupg</property>
+                        <property name="use_stock">False</property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkSeparatorMenuItem" id="menubar_edit_smi01">
+                        <property name="visible">True</property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkImageMenuItem" id="menubar_edit_invsel">
+                        <property name="label" translatable="yes">_Invert selection</property>
+                        <property name="visible">True</property>
+                        <property name="use_underline">True</property>
+                        <property name="image">image_invsel</property>
+                        <property name="use_stock">False</property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkImageMenuItem" id="menubar_edit_selnon">
+                        <property name="label" translatable="yes">Select _none</property>
+                        <property name="visible">True</property>
+                        <property name="use_underline">True</property>
+                        <property name="image">image_blank</property>
+                        <property name="use_stock">False</property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkImageMenuItem" id="menubar_edit_selall">
+                        <property name="label" translatable="yes">Select _all</property>
+                        <property name="visible">True</property>
+                        <property name="use_underline">True</property>
+                        <property name="image">image_selall</property>
+                        <property name="use_stock">False</property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkSeparatorMenuItem" id="menubar_edit_smi02">
+                        <property name="visible">True</property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkImageMenuItem" id="menubar_edit_preferences">
+                        <property name="label">gtk-preferences</property>
+                        <property name="visible">True</property>
+                        <property name="use_underline">True</property>
+                        <property name="use_stock">True</property>
+                      </object>
+                    </child>
+                  </object>
+                </child>
+              </object>
+            </child>
+            <child>
+              <object class="GtkMenuItem" id="menubar_package">
+                <property name="visible">True</property>
+                <property name="label" translatable="yes">_Package</property>
+                <property name="use_underline">True</property>
+                <child type="submenu">
+                  <object class="GtkMenu" id="menu1">
+                    <property name="visible">True</property>
+                    <child>
+                      <object class="GtkImageMenuItem" id="menubar_package_install">
+                        <property name="label" translatable="yes">_Install package(s)</property>
+                        <property name="visible">True</property>
+                        <property name="use_underline">True</property>
+                        <property name="image">image_install</property>
+                        <property name="use_stock">False</property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkImageMenuItem" id="menubar_package_uninstall">
+                        <property name="label" translatable="yes">_Uninstall package(s)</property>
+                        <property name="visible">True</property>
+                        <property name="use_underline">True</property>
+                        <property name="image">image_uninstall</property>
+                        <property name="use_stock">False</property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkSeparatorMenuItem" id="menubar_package_smi01">
+                        <property name="visible">True</property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkImageMenuItem" id="menuitem3">
+                        <property name="label" translatable="yes">Show package _info</property>
+                        <property name="visible">True</property>
+                        <property name="use_underline">True</property>
+                        <property name="image">image_info</property>
+                        <property name="use_stock">False</property>
+                      </object>
+                    </child>
+                  </object>
+                </child>
+              </object>
+            </child>
+            <child>
+              <object class="GtkMenuItem" id="menuitem4">
+                <property name="visible">True</property>
+                <property name="label" translatable="yes">_Help</property>
+                <property name="use_underline">True</property>
+                <child type="submenu">
+                  <object class="GtkMenu" id="menu3">
+                    <property name="visible">True</property>
+                    <child>
+                      <object class="GtkImageMenuItem" id="imagemenuitem10">
+                        <property name="label">gtk-about</property>
+                        <property name="visible">True</property>
+                        <property name="use_underline">True</property>
+                        <property name="use_stock">True</property>
+                      </object>
+                    </child>
+                  </object>
+                </child>
+              </object>
+            </child>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="position">0</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkToolbar" id="toolbar">
+            <property name="visible">True</property>
+            <child>
+              <object class="GtkToolButton" id="toolbar_tb_refresh">
+                <property name="visible">True</property>
+                <property name="tooltip_text" translatable="yes">Refresh the packages list</property>
+                <property name="label" translatable="yes">_Refresh</property>
+                <property name="use_underline">True</property>
+                <property name="stock_id">gtk-refresh</property>
+                <signal name="clicked" handler="bsdpm_gtk2_on_toolbar_tb_refresh_clicked"/>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="homogeneous">True</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkSeparatorToolItem" id="toolbar_tb_sep01">
+                <property name="visible">True</property>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="homogeneous">True</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkToolButton" id="toolbar_tb_selupg">
+                <property name="visible">True</property>
+                <property name="tooltip_text" translatable="yes">Select all upgradable packages on current list</property>
+                <property name="label" translatable="yes">_Upgradable</property>
+                <property name="use_underline">True</property>
+                <property name="stock_id">gtk-dnd-multiple</property>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="homogeneous">True</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkSeparatorToolItem" id="toolbar_tb_sep02">
+                <property name="visible">True</property>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="homogeneous">True</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkToolButton" id="toolbar_tb_install">
+                <property name="visible">True</property>
+                <property name="tooltip_text" translatable="yes">Install selected packages</property>
+                <property name="label" translatable="yes">_Install</property>
+                <property name="use_underline">True</property>
+                <property name="stock_id">gtk-add</property>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="homogeneous">True</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkToolButton" id="toolbar_tb_uninstall">
+                <property name="visible">True</property>
+                <property name="tooltip_text" translatable="yes">Uninstall selected packages</property>
+                <property name="label" translatable="yes">_Uninstall</property>
+                <property name="use_underline">True</property>
+                <property name="stock_id">gtk-remove</property>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="homogeneous">True</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkToolButton" id="toolbar_tb_showinfo">
+                <property name="visible">True</property>
+                <property name="tooltip_text" translatable="yes">Show information about selected package</property>
+                <property name="label" translatable="yes">_Information</property>
+                <property name="use_underline">True</property>
+                <property name="stock_id">gtk-info</property>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="homogeneous">True</property>
+              </packing>
+            </child>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="position">1</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkHPaned" id="hpaned1">
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <child>
+              <object class="GtkVPaned" id="vpaned2">
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="orientation">vertical</property>
+                <child>
+                  <object class="GtkScrolledWindow" id="scrolledwindow1">
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="hscrollbar_policy">automatic</property>
+                    <property name="vscrollbar_policy">automatic</property>
+                    <child>
+                      <object class="GtkTreeView" id="tvCategories">
+                        <property name="visible">True</property>
+                        <property name="can_focus">True</property>
+                        <property name="model">liststore_categories</property>
+                        <property name="search_column">0</property>
+                        <property name="tooltip_column">4</property>
+                        <signal name="cursor_changed" handler="bsdpm_gtk2_on_tvCategories_cursor_changed"/>
+                        <child>
+                          <object class="GtkTreeViewColumn" id="tvCategories_cName">
+                            <property name="resizable">True</property>
+                            <property name="sizing">autosize</property>
+                            <property name="title" translatable="yes">Category</property>
+                            <child>
+                              <object class="GtkCellRendererPixbuf" id="tvCategories_cName_CRP">
+                                <property name="stock_size">4</property>
+                              </object>
+                              <attributes>
+                                <attribute name="icon-name">0</attribute>
+                              </attributes>
+                            </child>
+                            <child>
+                              <object class="GtkCellRendererText" id="tvCategories_cName_CRT"/>
+                              <attributes>
+                                <attribute name="text">1</attribute>
+                              </attributes>
+                            </child>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="GtkTreeViewColumn" id="tvCategories_cDescription">
+                            <property name="resizable">True</property>
+                            <property name="sizing">autosize</property>
+                            <property name="title" translatable="yes">Description</property>
+                            <child>
+                              <object class="GtkCellRendererText" id="tvCategories_cDescription_CRT"/>
+                              <attributes>
+                                <attribute name="text">2</attribute>
+                              </attributes>
+                            </child>
+                          </object>
+                        </child>
+                      </object>
+                    </child>
+                  </object>
+                  <packing>
+                    <property name="resize">True</property>
+                    <property name="shrink">True</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkFrame" id="fScreenshot">
+                    <property name="visible">True</property>
+                    <property name="label_xalign">0</property>
+                    <child>
+                      <object class="GtkAlignment" id="alignment1">
+                        <property name="visible">True</property>
+                        <property name="left_padding">12</property>
+                        <child>
+                          <object class="GtkImage" id="iScreenshot">
+                            <property name="visible">True</property>
+                            <property name="stock">gtk-missing-image</property>
+                            <property name="icon-size">6</property>
+                          </object>
+                        </child>
+                      </object>
+                    </child>
+                    <child type="label">
+                      <object class="GtkLabel" id="label1">
+                        <property name="visible">True</property>
+                        <property name="label" translatable="yes">&lt;b&gt;Screenshot&lt;/b&gt;</property>
+                        <property name="use_markup">True</property>
+                      </object>
+                    </child>
+                  </object>
+                  <packing>
+                    <property name="resize">False</property>
+                    <property name="shrink">True</property>
+                  </packing>
+                </child>
+              </object>
+              <packing>
+                <property name="resize">False</property>
+                <property name="shrink">True</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkVPaned" id="vpaned1">
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="orientation">vertical</property>
+                <child>
+                  <object class="GtkScrolledWindow" id="scrolledwindow2">
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="hscrollbar_policy">automatic</property>
+                    <property name="vscrollbar_policy">automatic</property>
+                    <child>
+                      <object class="GtkTreeView" id="tvPackageList">
+                        <property name="visible">True</property>
+                        <property name="can_focus">True</property>
+                        <property name="model">liststore_packages</property>
+                        <property name="reorderable">True</property>
+                        <property name="rules_hint">True</property>
+                        <property name="search_column">1</property>
+                        <property name="show_expanders">False</property>
+                        <property name="tooltip_column">9</property>
+                        <signal name="cursor_changed" handler="bsdpm_gtk2_on_tvPackageList_cursor_changed"/>
+                        <child>
+                          <object class="GtkTreeViewColumn" id="tvPackageList_cState">
+                            <property name="sizing">autosize</property>
+                            <property name="clickable">True</property>
+                            <property name="sort_indicator">True</property>
+                            <property name="sort_column_id">0</property>
+                            <child>
+                              <object class="GtkCellRendererPixbuf" id="tvPackageList_cState_CR"/>
+                              <attributes>
+                                <attribute name="icon-name">0</attribute>
+                              </attributes>
+                            </child>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="GtkTreeViewColumn" id="tvPackageList_cPackageName">
+                            <property name="resizable">True</property>
+                            <property name="sizing">autosize</property>
+                            <property name="title" translatable="yes">Package name</property>
+                            <property name="clickable">True</property>
+                            <property name="sort_indicator">True</property>
+                            <property name="sort_column_id">1</property>
+                            <child>
+                              <object class="GtkCellRendererText" id="tvPackageList_cPackageName_CR"/>
+                              <attributes>
+                                <attribute name="text">1</attribute>
+                              </attributes>
+                            </child>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="GtkTreeViewColumn" id="tvPackageList_cVerAvail">
+                            <property name="resizable">True</property>
+                            <property name="sizing">autosize</property>
+                            <property name="title" translatable="yes">Available version</property>
+                            <property name="clickable">True</property>
+                            <property name="reorderable">True</property>
+                            <property name="sort_column_id">2</property>
+                            <child>
+                              <object class="GtkCellRendererText" id="tvPackageList_cVerAvail_CR"/>
+                              <attributes>
+                                <attribute name="text">2</attribute>
+                              </attributes>
+                            </child>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="GtkTreeViewColumn" id="tvPackageList_cVerInst">
+                            <property name="visible">False</property>
+                            <property name="resizable">True</property>
+                            <property name="sizing">autosize</property>
+                            <property name="title" translatable="yes">Installed version</property>
+                            <property name="clickable">True</property>
+                            <property name="reorderable">True</property>
+                            <property name="sort_column_id">3</property>
+                            <child>
+                              <object class="GtkCellRendererText" id="tvPackageList_cVerInst_CR"/>
+                              <attributes>
+                                <attribute name="text">3</attribute>
+                              </attributes>
+                            </child>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="GtkTreeViewColumn" id="tvPackageList_cPortDir">
+                            <property name="visible">False</property>
+                            <property name="sizing">autosize</property>
+                            <property name="title" translatable="yes">Port directory</property>
+                            <child>
+                              <object class="GtkCellRendererText" id="tvPackageList_cPortDir_CR"/>
+                              <attributes>
+                                <attribute name="text">4</attribute>
+                              </attributes>
+                            </child>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="GtkTreeViewColumn" id="tvPackageList_cComment">
+                            <property name="resizable">True</property>
+                            <property name="sizing">autosize</property>
+                            <property name="title" translatable="yes">Comment</property>
+                            <property name="clickable">True</property>
+                            <property name="reorderable">True</property>
+                            <property name="sort_column_id">5</property>
+                            <child>
+                              <object class="GtkCellRendererText" id="tvPackageList_cComment_CR"/>
+                              <attributes>
+                                <attribute name="text">5</attribute>
+                              </attributes>
+                            </child>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="GtkTreeViewColumn" id="tvPackageList_cDescription">
+                            <property name="visible">False</property>
+                            <property name="sizing">autosize</property>
+                            <property name="title" translatable="yes">Description</property>
+                            <child>
+                              <object class="GtkCellRendererText" id="tvPackageList_cDescription_CR"/>
+                              <attributes>
+                                <attribute name="text">6</attribute>
+                              </attributes>
+                            </child>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="GtkTreeViewColumn" id="tvPackageList_cMaintainer">
+                            <property name="resizable">True</property>
+                            <property name="sizing">autosize</property>
+                            <property name="title" translatable="yes">Maintainer</property>
+                            <property name="clickable">True</property>
+                            <property name="reorderable">True</property>
+                            <property name="sort_column_id">7</property>
+                            <child>
+                              <object class="GtkCellRendererText" id="tvPackageList_cMaintainer_CR"/>
+                              <attributes>
+                                <attribute name="text">7</attribute>
+                              </attributes>
+                            </child>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="GtkTreeViewColumn" id="tvPackageList_cWWW">
+                            <property name="resizable">True</property>
+                            <property name="sizing">autosize</property>
+                            <property name="title" translatable="yes">WWW</property>
+                            <property name="clickable">True</property>
+                            <property name="reorderable">True</property>
+                            <property name="sort_column_id">8</property>
+                            <child>
+                              <object class="GtkCellRendererText" id="tvPackageList_cWWW_CR"/>
+                              <attributes>
+                                <attribute name="text">8</attribute>
+                              </attributes>
+                            </child>
+                          </object>
+                        </child>
+                      </object>
+                    </child>
+                  </object>
+                  <packing>
+                    <property name="resize">True</property>
+                    <property name="shrink">True</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkNotebook" id="nbPackageInformation">
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <child>
+                      <object class="GtkScrolledWindow" id="scrolledwindow3">
+                        <property name="visible">True</property>
+                        <property name="can_focus">True</property>
+                        <property name="hscrollbar_policy">automatic</property>
+                        <property name="vscrollbar_policy">automatic</property>
+                        <child>
+                          <object class="GtkTextView" id="nbPackageInformation_Description_TV">
+                            <property name="visible">True</property>
+                            <property name="can_focus">True</property>
+                            <property name="editable">False</property>
+                            <property name="left_margin">10</property>
+                            <property name="right_margin">10</property>
+                            <property name="cursor_visible">False</property>
+                            <property name="buffer">textbuffer_package_description</property>
+                          </object>
+                        </child>
+                      </object>
+                    </child>
+                    <child type="tab">
+                      <object class="GtkLabel" id="nbPackageInformation_Description">
+                        <property name="visible">True</property>
+                        <property name="label" translatable="yes">Description</property>
+                      </object>
+                      <packing>
+                        <property name="tab_fill">False</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <placeholder/>
+                    </child>
+                    <child type="tab">
+                      <placeholder/>
+                    </child>
+                    <child>
+                      <placeholder/>
+                    </child>
+                    <child type="tab">
+                      <placeholder/>
+                    </child>
+                  </object>
+                  <packing>
+                    <property name="resize">False</property>
+                    <property name="shrink">True</property>
+                  </packing>
+                </child>
+              </object>
+              <packing>
+                <property name="resize">True</property>
+                <property name="shrink">True</property>
+              </packing>
+            </child>
+          </object>
+          <packing>
+            <property name="position">2</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkStatusbar" id="statusbar">
+            <property name="visible">True</property>
+            <property name="spacing">2</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="position">3</property>
+          </packing>
+        </child>
+      </object>
+    </child>
+  </object>
+  <object class="GtkImage" id="image_refresh">
+    <property name="visible">True</property>
+    <property name="stock">gtk-refresh</property>
+    <property name="icon-size">1</property>
+  </object>
+  <object class="GtkImage" id="image_open">
+    <property name="visible">True</property>
+    <property name="stock">gtk-open</property>
+    <property name="icon-size">1</property>
+  </object>
+  <object class="GtkImage" id="image_save">
+    <property name="visible">True</property>
+    <property name="stock">gtk-save</property>
+    <property name="icon-size">1</property>
+  </object>
+  <object class="GtkImage" id="image_saveas">
+    <property name="visible">True</property>
+    <property name="stock">gtk-save-as</property>
+    <property name="icon-size">1</property>
+  </object>
+  <object class="GtkImage" id="image_selupg">
+    <property name="visible">True</property>
+    <property name="stock">gtk-dnd-multiple</property>
+    <property name="icon-size">1</property>
+  </object>
+  <object class="GtkImage" id="image_invsel">
+    <property name="visible">True</property>
+    <property name="stock">gtk-revert-to-saved</property>
+    <property name="icon-size">1</property>
+  </object>
+  <object class="GtkImage" id="image_blank">
+    <property name="visible">True</property>
+    <property name="stock">gnome-stock-blank</property>
+    <property name="icon-size">1</property>
+  </object>
+  <object class="GtkImage" id="image_selall">
+    <property name="visible">True</property>
+    <property name="stock">gtk-select-all</property>
+    <property name="icon-size">1</property>
+  </object>
+  <object class="GtkImage" id="image_install">
+    <property name="visible">True</property>
+    <property name="stock">gtk-add</property>
+    <property name="icon-size">1</property>
+  </object>
+  <object class="GtkImage" id="image_uninstall">
+    <property name="visible">True</property>
+    <property name="stock">gtk-remove</property>
+    <property name="icon-size">1</property>
+  </object>
+  <object class="GtkImage" id="image_info">
+    <property name="visible">True</property>
+    <property name="stock">gtk-info</property>
+    <property name="icon-size">1</property>
+  </object>
+</interface>

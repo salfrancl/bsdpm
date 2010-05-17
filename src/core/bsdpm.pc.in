@@ -1,0 +1,13 @@
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+libdir=@libdir@
+datarootdir=@datarootdir@
+datadir=@datadir@
+includedir=@includedir@/bsdpm
+
+Name: libbsdpm
+Description: BSD Package Manager core library
+Version: @VERSION@
+Requires: 
+Libs: -L${libdir} -lbsdpm_core
+Cflags: -I${includedir}
