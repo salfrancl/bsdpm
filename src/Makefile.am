@@ -2,10 +2,10 @@
 
 ## Created by Anjuta
 
-includedir = ${prefix}/include/bsdpm
+includedir = $(prefix)/include/$(PACKAGE_NAME)
 
 AM_CPPFLAGS = \
-	-Wall \
+	-Wall -Werror \
 	-DPACKAGE_LOCALE_DIR=\""$(prefix)/$(DATADIRNAME)/locale"\" \
 	-DPACKAGE_SRC_DIR=\""$(srcdir)"\" \
 	-DPACKAGE_SYSCONF_DIR=\""$(sysconfdir)"\" \

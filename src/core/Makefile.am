@@ -2,10 +2,10 @@
 
 ## Created by Anjuta
 
-includedir = ${prefix}/include/bsdpm
+includedir = $(prefix)/include/$(PACKAGE_NAME)/core
 
 AM_CPPFLAGS = \
-	-Wall \
+	-Wall -Werror \
 	-DPACKAGE_LOCALE_DIR=\""$(prefix)/$(DATADIRNAME)/locale"\" \
 	-DPACKAGE_SRC_DIR=\""$(srcdir)"\" \
 	-DPACKAGE_SYSCONF_DIR=\""$(sysconfdir)"\" \
@@ -23,12 +23,12 @@ libbsdpm_core_la_SOURCES = \
 
 libbsdpm_core_la_CFLAGS = \
 	$(SQLITE3_CFLAGS) \
-	$(LIBCURL_CFLAGS)
+	$(CURL_CFLAGS)
 
 libbsdpm_core_la_LDFLAGS = \
 	-Wl, --export-dynamic \
 	$(SQLITE3_LIBS) \
-	$(LIBCURL_LIBS)
+	$(CURL_LIBS)
 
 libbsdpm_core_la_LIBADD = 
 

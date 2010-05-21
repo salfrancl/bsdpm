@@ -2,7 +2,7 @@
 
 ## Created by Anjuta
 
-includedir = $(prefix)/include/$(PACKAGE_NAME)
+includedir = $(prefix)/include/$(PACKAGE_NAME)/gtk2
 uidir = $(datadir)/$(PACKAGE_NAME)/ui
 desktop_entrydir = $(datadir)/applications
 icons_apps_16x16dir = $(datadir)/icons/hicolor/16x16/apps
@@ -105,7 +105,7 @@ icons_mimetypes_22x22_DATA = \
 	icons/22x22/mimetypes/bsdpm-package-uninstalled.png
 
 AM_CPPFLAGS = \
-	-Wall \
+	-Wall -Werror \
 	-DPACKAGE_LOCALE_DIR=\""$(prefix)/$(DATADIRNAME)/locale"\" \
 	-DPACKAGE_SRC_DIR=\""$(srcdir)"\" \
 	-DPACKAGE_SYSCONF_DIR=\""$(sysconfdir)"\" \

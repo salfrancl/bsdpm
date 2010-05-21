@@ -2,9 +2,9 @@
 /*
  * core.h
  * Copyright (C) Leinier Cruz Salfran 2010 <salfrancl@yahoo.es>
- * 
+ *
  * libbsdpm_core is free software copyrighted by Leinier Cruz Salfran.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
  * are met:
@@ -16,7 +16,7 @@
  * 3. Neither the name ``Leinier Cruz Salfran'' nor the name of any other
  *    contributor may be used to endorse or promote products derived
  *    from this software without specific prior written permission.
- * 
+ *
  * libbsdpm IS PROVIDED BY Leinier Cruz Salfran ``AS IS'' AND ANY EXPRESS
  * OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -216,7 +216,8 @@ typedef enum _BSDPM_SEARCH_OPERATION BSDPM_SEARCH_OPERATION;
 enum _BSDPM_INSTALL_OPERATION {
 	BSDPM_INSTALL_OPERATION_STARTING = 0x540,
 	BSDPM_INSTALL_PORT_NOT_FOUND = 0x541,
-	BSDPM_INSTALL_PORT_DUPLICATED = 0x542
+	BSDPM_INSTALL_PORT_DUPLICATED = 0x542,
+	BSDPM_INSTALL_OPERATION_CHECK_SANITY = 0x543
 //	BSDPM_INSTALL_OPERATION_CONFIGUREPORTS = 0x541,
 //	BSDPM_INSTALL_OPERATION_GATHERINGDEPENDENCIES = 0x542,
 //	BSDPM_INSTALL_OPERATION_FINISH = 0x152
@@ -286,7 +287,7 @@ char *bsdpm_categories_descriptions[BSDPM_CATEGORIES_MAX];
  * Functions prototypes
  */
 typedef BSDPM_ERRORS (*bsdpm_core_search_callback) (BSDPM_SEARCH_OPERATION operation, bsdpm_port_information *port_information);
-typedef BSDPM_ERRORS (*bsdpm_core_install_callback) (BSDPM_INSTALL_OPERATION operation, void *notify_data);
+typedef BSDPM_ERRORS (*bsdpm_core_install_callback) (BSDPM_INSTALL_OPERATION operation, const char *notify_data);
 
 void bsdpm_core_init_categories (void);
 void bsdpm_core_substr (char *dst, const char *src, int start, int end);
@@ -296,6 +297,7 @@ void bsdpm_core_split_packagename_into_name_version (const char *src, char *szna
 
 BSDPM_ERRORS bsdpm_core_process_configuration_file ();
 
+char **bsdpm_core_split (const char *buffer, const char *delimiter);
 void bsdpm_core_changecase (char *buffer, const char *src, unsigned short ucase);
 BSDPM_ERRORS bsdpm_core_database_open (void);
 void bsdpm_core_database_close (void);

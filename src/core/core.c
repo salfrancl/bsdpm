@@ -2,9 +2,9 @@
 /*
  * core.c
  * Copyright (C) Leinier Cruz Salfran 2010 <salfrancl@yahoo.es>
- * 
+ *
  * libbsdpm_core is free software copyrighted by Leinier Cruz Salfran.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
  * are met:
@@ -16,7 +16,7 @@
  * 3. Neither the name ``Leinier Cruz Salfran'' nor the name of any other
  *    contributor may be used to endorse or promote products derived
  *    from this software without specific prior written permission.
- * 
+ *
  * libbsdpm IS PROVIDED BY Leinier Cruz Salfran ``AS IS'' AND ANY EXPRESS
  * OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -42,7 +42,7 @@ sqlite3 *database;
 void bsdpm_core_init_categories (void)
 {
 int i;
-	
+
 	bsdpm_categories_names[BSDPM_CATEGORY_ACCESSIBILITY] = "accessibility";
 	bsdpm_categories_descriptions[BSDPM_CATEGORY_ACCESSIBILITY] = "Packages to help disabled users";
 
@@ -193,8 +193,8 @@ int i;
 	bsdpm_categories_names[BSDPM_CATEGORY_GERMAN] = "german";
 	bsdpm_categories_descriptions[BSDPM_CATEGORY_GERMAN] = "Ported software for the germanic countries";
 
-	bsdpm_categories_names[BSDPM_CATEGORY_HEBREW] = "hebrew"; 
-	bsdpm_categories_descriptions[BSDPM_CATEGORY_HEBREW] = "Ported software for the hebrew language"; 
+	bsdpm_categories_names[BSDPM_CATEGORY_HEBREW] = "hebrew";
+	bsdpm_categories_descriptions[BSDPM_CATEGORY_HEBREW] = "Ported software for the hebrew language";
 
 	bsdpm_categories_names[BSDPM_CATEGORY_HUNGARIAN] = "hungarian";
 	bsdpm_categories_descriptions[BSDPM_CATEGORY_HUNGARIAN] = "Ported software for the hungarian market";
@@ -214,8 +214,8 @@ int i;
 	bsdpm_categories_names[BSDPM_CATEGORY_RUSSIAN] = "russian";
 	bsdpm_categories_descriptions[BSDPM_CATEGORY_RUSSIAN] = "Ported software for the russian market";
 
-	bsdpm_categories_names[BSDPM_CATEGORY_SPANISH] = "spanish"; 
-	bsdpm_categories_descriptions[BSDPM_CATEGORY_SPANISH] = "Ported software for the spanish market"; 
+	bsdpm_categories_names[BSDPM_CATEGORY_SPANISH] = "spanish";
+	bsdpm_categories_descriptions[BSDPM_CATEGORY_SPANISH] = "Ported software for the spanish market";
 
 	bsdpm_categories_names[BSDPM_CATEGORY_UKRAINIAN] = "ukrainian";
 	bsdpm_categories_descriptions[BSDPM_CATEGORY_UKRAINIAN] = "Ported software for the ukrainian market";
@@ -310,8 +310,8 @@ int i;
 	bsdpm_categories_names[BSDPM_CATEGORY_MISC] = "misc";
 	bsdpm_categories_descriptions[BSDPM_CATEGORY_MISC] = "Miscellaneous utilities";
 
-	bsdpm_categories_names[BSDPM_CATEGORY_PALM] = "palm"; 
-	bsdpm_categories_descriptions[BSDPM_CATEGORY_PALM] = "Software support for the Palm(TM) series"; 
+	bsdpm_categories_names[BSDPM_CATEGORY_PALM] = "palm";
+	bsdpm_categories_descriptions[BSDPM_CATEGORY_PALM] = "Software support for the Palm(TM) series";
 
 	bsdpm_categories_names[BSDPM_CATEGORY_UNKNOWN] = "unknown";
 	bsdpm_categories_descriptions[BSDPM_CATEGORY_UNKNOWN] = "Packages that belongs to unknown category";
@@ -331,14 +331,14 @@ int p = 0, t = 0;
 		for (t = start; t <= end; t++)
 			dst[p++] = src[t];
 	}
-	
+
 	return;
 }
 
 void bsdpm_core_trim (char *buffer, const char *src)
 {
 int pos = 0, start = 0, end = 0;
-	
+
 	// cut off spaces at start of the string
 	for (pos = 0; pos < strlen (src); pos++)
 	{
@@ -363,7 +363,7 @@ int pos = 0, start = 0, end = 0;
 				end = pos + 1;
 				break;
 		}
-		
+
 		if (end > 0)
 			break;
 	}
@@ -383,7 +383,7 @@ char **bsdpm_core_split (const char *buffer, const char *delimiter)
 {
 int pos = 0;
 char *sztemp, **dynamic_array, *token;
-	
+
 	// parse 'buffer' into 'dynamic_array' dynamic array
 	sztemp = strdup (buffer);
 	dynamic_array = malloc (sizeof (char *));
@@ -394,14 +394,14 @@ char *sztemp, **dynamic_array, *token;
 	}
 	dynamic_array[pos] = NULL;
 	free (sztemp);
-	
+
 	return dynamic_array;
 }
 
 void bsdpm_core_changecase (char *buffer, const char *src, unsigned short ucase)
 {
 int pos = 0;
-	
+
 	// change case of the string
 	for (pos = 0; pos < strlen (src); pos++)
 	{
@@ -410,7 +410,7 @@ int pos = 0;
 		if (ucase == 1)
 			buffer[pos] = toupper (src[pos]);
 	}
-	
+
 	return;
 }
 
@@ -431,7 +431,7 @@ unsigned short p;
 				break;
 		}
 	}
-	
+
 	return;
 }
 
@@ -452,7 +452,7 @@ unsigned short p;
 				break;
 		}
 	}
-	
+
 	return;}
 
 void bsdpm_core_translate_size_to_human_readable (char *dst, const unsigned int src)
@@ -474,9 +474,9 @@ double size_downgraded = 0;
 		size_downgraded = (double) (size_downgraded / 1024);
 		position++;
 	}
-	
+
 	sprintf (dst, "%.2f%s", (double)size_downgraded, size_legend[position]);
-	
+
 	return;
 }
 
@@ -489,7 +489,7 @@ int szpos = 0;
 		{
 			bsdpm_core_substr (szname, src, 0, szpos);
 			bsdpm_core_substr (szversion, src, szpos + 1, strlen (src));
-			
+
 			return;
 		}
 
@@ -503,7 +503,7 @@ int category_id;
 	for (category_id = BSDPM_CATEGORIES_MIN; category_id < (BSDPM_CATEGORIES_MAX - 1); category_id++)
 		if (strcmp (category, bsdpm_categories_names[category_id]) == 0)
 			return category_id;
-	
+
 	return BSDPM_CATEGORY_UNKNOWN;
 }
 
@@ -520,13 +520,13 @@ char configuration_line[BUFSIZ], variable[255], variable_temp[255], value[255], 
 		inF = fopen (bsdpm_config.config_filename, "r");
 		if(inF == NULL)
 			return BSDPM_ERROR_CANT_OPEN_CONFIGURATION_FILE;
-		
+
 		// process configuration file and populate 'bsdpm_config'
 		while (!feof (inF))
 		{
 			memset (configuration_line, '\0', sizeof (configuration_line));
 			fgets (configuration_line, sizeof (configuration_line), inF);
-			
+
 			bsdpm_core_trim (configuration_line, configuration_line);
 
 			// if got an entire line then process the line
@@ -540,12 +540,12 @@ char configuration_line[BUFSIZ], variable[255], variable_temp[255], value[255], 
 					memset (variable_temp, '\0', sizeof (variable_temp));
 					memset (value, '\0', sizeof (value));
 					memset (value_temp, '\0', sizeof (value_temp));
-					
+
 					// split configuration line
 					bsdpm_core_split_packagename_into_name_version (configuration_line, variable_temp, value_temp, '=');
 					bsdpm_core_trim (variable, variable_temp);
 					bsdpm_core_trim (value, value_temp);
-					
+
 					// set configuration
 					if (strcasecmp (variable, "portsdir") == 0)
 						snprintf (bsdpm_config.portsdir, sizeof (bsdpm_config.portsdir), "%s", value);
@@ -568,9 +568,9 @@ char configuration_line[BUFSIZ], variable[255], variable_temp[255], value[255], 
 				}
 			}
 		}
-		
+
 		// close configuration file
-		fclose (inF);		
+		fclose (inF);
 	} else {
 		 return BSDPM_ERROR_CONFIGURATION_FILE_DOESNT_EXISTS;
 	}
@@ -588,11 +588,11 @@ int error = 0;
 	// fill database file name
 	memset (database_filename, '\0', sizeof (database_filename));
 	snprintf (database_filename, sizeof (database_filename), "%s/bsdpm.db", bsdpm_config.bsdpm_localstatedir);
-	
+
 	// database exists?
 	if (stat (database_filename, &sstat) == 0)
 		database_exists = 1;
-	
+
 	// open database
 	error = sqlite3_open_v2(database_filename, &database, SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE | SQLITE_OPEN_FULLMUTEX, NULL);
 	if (error)
@@ -600,7 +600,7 @@ int error = 0;
 		sqlite3_close(database);
 		return BSDPM_ERROR_CANT_OPEN_DATABASE;
 	}
-	
+
 	// if database doesn't exists create structure
 	if (database_exists == 0)
 	{
@@ -640,20 +640,20 @@ CURL *hnd = curl_easy_init();
 	pc = strrchr (uri, '/');
 	if (pc != NULL)
 		snprintf (filename, sizeof (filename), "%s/%s", bsdpm_config.bsdpm_localstatedir, pc);
-	
+
 	outF = fopen (filename, "w");
 	if (outF == NULL)
 		return BSDPM_ERROR_CANT_CREATE_FILE;
-	
+
 	// set curl options
 	curl_easy_setopt(hnd, CURLOPT_USERAGENT, "bsdpm/0.1");
 	curl_easy_setopt(hnd, CURLOPT_MAXREDIRS, 50);
 	curl_easy_setopt(hnd, CURLOPT_FOLLOWLOCATION, 1);
 	curl_easy_setopt(hnd, CURLOPT_AUTOREFERER, 1);
-	
+
 	// there is a 'socks_proxy' environment variable?
 	szenv = getenv("socks_proxy");
-	
+
 	if (szenv != NULL)
 	{
 		curl_easy_setopt(hnd, CURLOPT_PROXY, szenv);
@@ -676,7 +676,7 @@ CURL *hnd = curl_easy_init();
 
 	if ((int)ret != 0)
 		return BSDPM_ERROR_CANT_DOWNLOAD_FILE;
-	
+
 	return BSDPM_NOERROR;
 }
 
@@ -739,7 +739,7 @@ struct stat ss;
 
 	snprintf (szif, sizeof (szif), "%s/INDEX.bz2", bsdpm_config.bsdpm_localstatedir);
 	unlink (szif);
-	
+
 	return BSDPM_NOERROR;
 }
 
@@ -809,16 +809,16 @@ int sec_prev = 0;
 								// let's maintain the last FTS checked item
 								memset (temp_text1, '\0', sizeof (temp_text1));
 								strcpy (temp_text1, fts_cur->fts_path);
-								
+
 								// get the last path component
 								memset (temp_comp_text1[0], '\0', sizeof (temp_comp_text1[0]));
 								memset (temp_comp_text1[1], '\0', sizeof (temp_comp_text1[1]));
 								bsdpm_core_split_packagename_into_name_version (fts_cur->fts_path, temp_comp_text1[0], temp_comp_text1[1], '/');
-								
+
 								// populate package version
 								ip[tip] = malloc (sizeof (struct _ip));
 								snprintf (ip[tip]->name, sizeof (ip[tip]->name), "%s", temp_comp_text1[1]);
-								
+
 								// populate package origin
 								snprintf (temp_text2, sizeof (temp_text2), "%s/+CONTENTS", fts_cur->fts_path);
 								if (stat (temp_text2, &ss) == 0)
@@ -828,16 +828,16 @@ int sec_prev = 0;
 									fgets (temp_text2, sizeof (temp_text2), inF);
 									memset (temp_text2, '\0', sizeof (temp_text2));
 									fgets (temp_text2, sizeof (temp_text2), inF);
-									
+
 									memset (temp_comp_text1[1], '\0', sizeof (temp_comp_text1[1]));
 									bsdpm_core_substr (temp_comp_text1[1], temp_text2, strlen ("@comment ORIGIN:"), strlen (temp_text2) - 1);
 									snprintf (temp_comp_text1[0], sizeof (temp_comp_text1[0]), "/usr/ports/%s", temp_comp_text1[1]);
-									
+
 									snprintf (ip[tip]->origin, sizeof (ip[tip]->origin), "%s", temp_comp_text1[0]);
-									
+
 									fclose (inF);
 								}
-								
+
 								ip = realloc (ip, (sizeof (ip) + sizeof (struct _ip *)));
 								tip++;
 							}
@@ -872,7 +872,7 @@ int sec_prev = 0;
 					callback (NULL, bytes_total, bytes_read, 0, 0);
 				}
 			}
-		
+
 			// if got an entire line then process the line
 			if (strlen (index_line) > 0)
 			{
@@ -888,7 +888,7 @@ int sec_prev = 0;
 				memset (categories, '\0', sizeof (categories));
 				memset (www, '\0', sizeof (www));
 				memset (dependencies, '\0', sizeof (dependencies));
-			
+
 				// initialize variables
 				pos = chunk_pos1 = chunk_pos2 = temp_int1 = temp_int2 = temp_int3 = 0;
 
@@ -902,7 +902,7 @@ int sec_prev = 0;
 							memset (temp_large_text, '\0', sizeof (temp_large_text));
 							bsdpm_core_substr (temp_large_text, index_line, chunk_pos1, chunk_pos2);
 							chunk_pos1 = chunk_pos2 + 1;
-						
+
 							switch (pos)
 							{
 								// name, version
@@ -983,7 +983,7 @@ int sec_prev = 0;
 				bsdpm_core_encode_string (comment, temp_text1);
 				snprintf (temp_large_text, sizeof (temp_large_text), "INSERT INTO \"%s\" VALUES(%i,'%s','%s','%s','%s','%s','%s','%s','%s','%s','%s');", bsdpm_config.mode_table, package_id, state, name, version, installed_version, port_path, temp_text1, description_file, maintainer, www, dependencies);
 				sqlite3_exec(database, temp_large_text, NULL, NULL, NULL);
-				
+
 				// store categories
 				if (strlen (categories) > 0)
 				{
@@ -1005,7 +1005,7 @@ int sec_prev = 0;
 
 		if (callback != NULL)
 			callback (NULL, bytes_total, bytes_total, 0, 0);
-		
+
 		// free memory
 		free (ip);
 		fclose (inF);
@@ -1029,9 +1029,9 @@ char file_path[255];
 	// is 'packages mode' active?
 	if (bsdpm_config.mode == 1)
 		snprintf (file_path, sizeof (file_path), "%s/INDEX", bsdpm_config.bsdpm_localstatedir);
-	
+
 	unlink (file_path);
-	
+
 	return;
 }
 
@@ -1043,21 +1043,21 @@ sqlite3_stmt *statement;
 bsdpm_port_information pi;
 unsigned short found = 0;
 
-	
-	// do search	
+
+	// do search
 	memset (&pi, '\0', sizeof (pi));
-	sql = sqlite3_mprintf ("SELECT %s_id, state, name, version, installed_version, port_path, comment, maintainer, www FROM %s WHERE (%s);", bsdpm_config.mode_table, bsdpm_config.mode_table, search_criteria);	
+	sql = sqlite3_mprintf ("SELECT %s_id, state, name, version, installed_version, port_path, comment, maintainer, www FROM %s WHERE (%s);", bsdpm_config.mode_table, bsdpm_config.mode_table, search_criteria);
 
 	if (callback != NULL)
 		callback (BSDPM_SEARCH_OPERATION_SEARCHING, NULL);
-		
+
 	error = sqlite3_prepare_v2 (database, sql, -1, &statement, NULL);
 	if (error != SQLITE_OK)
 	{
 		error = BSDPM_ERROR_SEARCH_INVALID;
 		goto end;
 	}
-	
+
 	// notify results
 	while ((error = sqlite3_step (statement)) == SQLITE_ROW)
 	{
@@ -1075,16 +1075,16 @@ unsigned short found = 0;
 			snprintf (pi.www, sizeof (pi.www), "%s", sqlite3_column_text (statement, 8));
 
 			error = callback (BSDPM_SEARCH_OPERATION_PROCESS_RESULT, &pi);
-			
+
 			if (error == BSDPM_CANCEL_OPERATION)
 				break;
 		}
 	}
-	
+
 	if (found == 0)
 		error = BSDPM_ERROR_SEARCH_HAS_NO_RESULTS;
-	
-	
+
+
 	// free memory
 	sqlite3_finalize (statement);
 
@@ -1098,7 +1098,7 @@ int bsdpm_core_execute_pipe (int *file_descriptors, const char *command, char *c
 {
 int fork_ret = 0, total = 0;
 char *sztemp, **arguments, *token;
-	
+
 	// parse 'command' into 'arguments' dynamic array
 	sztemp = strdup (command);
 	arguments = malloc (sizeof (char *));
@@ -1112,11 +1112,11 @@ char *sztemp, **arguments, *token;
 
 	// try to fork
 	fork_ret = vfork ();
-	
+
 	// can't fork?
 	if (fork_ret == -1)
 		return BSDPM_ERROR_OUT_OF_RESOURCES;
-	
+
 	// okey, forked, then execute new process
 	if (fork_ret == 0)
 	{
@@ -1146,7 +1146,7 @@ BSDPM_ERRORS bsdpm_core_execute_standard (const char *command, char *const envir
 BSDPM_ERRORS error = BSDPM_NOERROR;
 int fork_ret = 0, total = 0, pidstatus = 0;
 char *sztemp, **arguments, *token;
-	
+
 	// parse 'command' into 'arguments' dynamic array
 	sztemp = strdup (command);
 	arguments = malloc (sizeof (char *));
@@ -1160,11 +1160,11 @@ char *sztemp, **arguments, *token;
 
 	// try to fork
 	fork_ret = vfork ();
-	
+
 	// can't fork?
 	if (fork_ret == -1)
 		return BSDPM_ERROR_OUT_OF_RESOURCES;
-	
+
 	// okey, forked, then execute new process
 	if (fork_ret == 0)
 	{
@@ -1187,7 +1187,7 @@ char *sztemp, **arguments, *token;
 				error = BSDPM_ERROR_INSTALLATION_ERROR;
 			break;
 		}
-		
+
 		usleep (5000);
 	}
 
@@ -1222,7 +1222,7 @@ char buffer[BUFSIZ];
 				error = BSDPM_ERROR_INSTALLATION_ERROR;
 			break;
 		}
-		
+
 		memset (buffer, '\0', sizeof (buffer));
 		read (file_descriptors[0], buffer, BUFSIZ);
 
@@ -1233,7 +1233,7 @@ char buffer[BUFSIZ];
 
 		usleep (5000);
 	}
-	
+
 	// close file descriptors
 	close (file_descriptors[0]);
 	close (file_descriptors[1]);
@@ -1270,7 +1270,7 @@ char buffer[255];
 	if (error != BSDPM_NOERROR)
 		return error;
 
-		
+
 	// start to patch
 	if (callback != NULL)
 		callback (BSDPM_INSTALL_OPERATION_STARTPATCH, path);
@@ -1330,21 +1330,21 @@ BSDPM_ERRORS error = BSDPM_NOERROR;
 BSDPM_ERRORS bsdpm_core_install (const char *names, bsdpm_core_install_callback callback)
 {
 BSDPM_ERRORS error = BSDPM_NOERROR;
-char **danames, *duplicated = 0, **daduplicated, temp_text1[BUFSIZ], temp_text2[BUFSIZ];
-unsigned short pos = 0, pos2 = 0, found = 0;
+char **danames, *duplicated, temp_text1[BUFSIZ], temp_text2[BUFSIZ];
+unsigned short pos = 0, found = 0;
 sqlite3_stmt *statement;
 char sql[BUFSIZ];
 
-	// notify start of the process
+	// notify 'start' of the process
 	if (callback != NULL)
 		callback (BSDPM_INSTALL_OPERATION_STARTING, NULL);
 
 	// empty variables
 	memset (sql, '\0', sizeof (sql));
-	
+
 	// split 'names' into dynamic array 'danames'
 	danames = bsdpm_core_split (names, " ");
-	
+
 	// discard duplicated entries on database
 	if (danames != NULL)
 	{
@@ -1354,109 +1354,110 @@ char sql[BUFSIZ];
 			{
 				// empty variables
 				found = 0;
-				
+
 				// prepare sql query
-				snprintf (sql, sizeof (sql), "SELECT port_path, comment FROM %s WHERE (port_path LIKE '%%%s%%');", bsdpm_config.mode_table, danames[pos]);
-				error = sqlite3_prepare_v2 (database, sql, -1, &statement, NULL);
+				snprintf (sql, sizeof (sql), "SELECT port_path, comment FROM %s WHERE (port_path LIKE '%%/%s');", bsdpm_config.mode_table, danames[pos]);
+				error = sqlite3_prepare_v2 (database, sql, sizeof (sql), &statement, NULL);
 				if (error != SQLITE_OK)
 				{
 					error = BSDPM_ERROR_DATABASE_IS_CORRUPT;
 					goto end;
 				}
-	
+
 				// execute sql query
 				error = sqlite3_step (statement);
-				
+
 				// there is a result?
 				if (error == SQLITE_ROW)
 				{
 					found = 1;
-					
+
+					// put on 'duplicated' variable the result
+					// with format: 'port_path - comment'
 					if (callback != NULL)
 					{
+                        // empty variables
 						memset (temp_text1, '\0', sizeof (temp_text1));
 						memset (temp_text2, '\0', sizeof (temp_text2));
-						
+
+						// get 'port_path' field with '/usr/ports/' text
 						snprintf (temp_text2, sizeof (temp_text2), "%s", sqlite3_column_text (statement, 0));
 						bsdpm_core_substr (temp_text1, temp_text2, 11, strlen (temp_text2));
+
+						// get 'comment' field
 						snprintf (temp_text2, sizeof (temp_text2), "%s", sqlite3_column_text (statement, 1));
-						
-						daduplicated = malloc (sizeof (char *));
-						duplicated = malloc (sizeof (danames[pos]));
+
+						// fill 'duplicated' variable
+						duplicated = malloc (sizeof (temp_text1) + (sizeof (char) * 4) + sizeof (temp_text2));
 						memset (duplicated, '\0', sizeof (duplicated));
-						strcpy (duplicated, danames[pos]);
-						daduplicated[pos2++] = duplicated;
-						
-						realloc (duplicated,  sizeof (duplicated) + sizeof (char *));
-						duplicated = malloc ((sizeof (char) * strlen (temp_text1)) + (sizeof (char) * 4) + (sizeof (char) * strlen (temp_text2)));
-						memset (duplicated, '\0', sizeof (duplicated));
-						strcat (duplicated, temp_text1);
+						strcpy (duplicated, temp_text1);
 						strcat (duplicated, " - ");
 						strcat (duplicated, temp_text2);
-						daduplicated[pos2++] = duplicated;
 					}
 
 					// there is more than one result?
 					while ((error = sqlite3_step (statement)) == SQLITE_ROW)
 					{
 						found = 2;
-						
+
+                        // add to 'duplicated' variable the result
+                        // with format: '|port_path - comment'
 						if (callback != NULL)
 						{
+						    // empty variables
 							memset (temp_text1, '\0', sizeof (temp_text1));
 							memset (temp_text2, '\0', sizeof (temp_text2));
 
+							// get 'port_path' field with '/usr/ports/' text
 							snprintf (temp_text2, sizeof (temp_text2), "%s", sqlite3_column_text (statement, 0));
 							bsdpm_core_substr (temp_text1, temp_text2, 11, strlen (temp_text2));
 							snprintf (temp_text2, sizeof (temp_text2), "%s", sqlite3_column_text (statement, 1));
 
-							realloc (duplicated,  sizeof (duplicated) + sizeof (char *));
-							duplicated = malloc ((sizeof (char) * strlen (temp_text1)) + (sizeof (char) * 4) + (sizeof (char) * strlen (temp_text2)));
-							memset (duplicated, '\0', sizeof (duplicated));
+							// fill 'duplicated' variable
+							realloc (duplicated,  sizeof (duplicated) + (sizeof (temp_text1) + (sizeof (char) * 5) + sizeof (temp_text2)));
+							strcat (duplicated, "|");
 							strcat (duplicated, temp_text1);
 							strcat (duplicated, " - ");
 							strcat (duplicated, temp_text2);
-							daduplicated[pos2++] = duplicated;
+							strcat (duplicated, "\0");
 						}
 					}
-					
-					if (callback != NULL)
-						daduplicated[pos2] = NULL;
 				}
-				
+
+				// finalize the sql execution
 				sqlite3_finalize (statement);
-				
-				// if wasn't result then notify
+
+				// if there is not any result then notify
 				if (found == 0)
 				{
 					if (callback != NULL)
-						callback (BSDPM_INSTALL_PORT_NOT_FOUND, (void *)danames[pos]);
+						callback (BSDPM_INSTALL_PORT_NOT_FOUND, danames[pos]);
+
+                    error = BSDPM_ERROR_INSTALLATION_ERROR;
 				}
-				
+
 				// if there is more than one results then notify
 				if (found == 2)
-				{
 					if (callback != NULL)
-					{
-					
-						callback (BSDPM_INSTALL_PORT_DUPLICATED, (void *)daduplicated);
-						free (daduplicated);
-					}
-				}
-				
+						callback (BSDPM_INSTALL_PORT_DUPLICATED, duplicated);
+
 				// free memory
-//				if (callback != NULL)
-//					free (duplicated);
+				if ((callback != NULL) && (found > 0))
+					free (duplicated);
 			}
-			
+
 			pos++;
 		}
 	}
 
+	// notify 'check_sanity' of the process
+	if (callback != NULL)
+		callback (BSDPM_INSTALL_OPERATION_CHECK_SANITY, NULL);
+
 end:
 	// free memory
 	free (danames);
-	
+
 	return error;
 }
 
@@ -1481,7 +1482,7 @@ time_t t1, t2;
 	putenv ("LC_ALL=C");
 	if (bsdpm_config.create_packages == 1)
 		putenv ("INSTALL_TARGET=package");
-	
+
 	// parse 'packages' into 'szpackages' dynamic array
 	sztemp = strdup (names);
 	sznames = malloc (sizeof (char *));
@@ -1491,7 +1492,7 @@ time_t t1, t2;
 		sznames = realloc (sznames, (sizeof (sznames) + (sizeof (char) * 255)));
 	}
 	sznames[names_pos] = NULL;
-	
+
 	// try to install based on 'mode' configuration value
 	names_pos = 0;
 	while (sznames[names_pos] != NULL)
@@ -1518,7 +1519,7 @@ time_t t1, t2;
 			error = bsdpm_core_execute_sync (buffer, command, environ);
 			if (error != BSDPM_NOERROR)
 				return error;
-			
+
 			time (&t1);
 			// split dependencies on 'dependencies1' dynamic array
 			dependencies1 = bsdpm_core_split (buffer, "\n", 255);
@@ -1539,25 +1540,25 @@ time_t t1, t2;
 				dependencies = (struct _dependencies *) malloc (sizeof (struct _dependencies));
 				if (first_dependency == NULL)
 					first_dependency = dependencies;
-					
+
 				sprintf (dependencies->name ,"%s", dependencies1[dependencies1_pos]);
 				dependencies->dependencies = bsdpm_core_split (buffer, "\n", 255);
-				
+
 				if (prev_dependency != NULL)
 					prev_dependency->next = dependencies;
 				prev_dependency = dependencies;
-				
+
 				// continue
 				dependencies1_pos++;
 			}
-			
+
 			// don't forget the last entry
 			dependencies = (struct _dependencies *) malloc (sizeof (struct _dependencies));
 			prev_dependency->next = dependencies;
 			free (prev_dependency);
 
 			free (dependencies1);
-			
+
 			dependencies = first_dependency;
 			while (dependencies->next != NULL)
 			{
@@ -1584,7 +1585,7 @@ time_t t1, t2;
 							}
 							temp_dependency->dependencies[dependencies2_pos] = strdup ("");
 							temp_dependency->next = prev_dependency->next;
-							
+
 							free (prev_dependency);
 							prev_dependency = (struct _dependencies *) malloc (sizeof (struct _dependencies));
 							strcpy (prev_dependency->name, dependencies->name);
@@ -1599,7 +1600,7 @@ time_t t1, t2;
 							}
 							prev_dependency->dependencies[dependencies2_pos] = strdup ("");
 							temp_dependency->next = dependencies->next;
-							
+
 							free (dependencies);
 							dependencies = (struct _dependencies *) malloc (sizeof (struct _dependencies));
 							strcpy (dependencies->name, temp_dependency->name);
@@ -1614,19 +1615,19 @@ time_t t1, t2;
 							}
 							dependencies->dependencies[dependencies2_pos] = strdup ("");
 							dependencies->next = temp_dependency->next;
-							
+
 							free (temp_dependency);
 							dependency_found = 1;
 							break;
 						}
 						prev_dependency = prev_dependency->next;
 					}
-					
+
 					if (dependency_found == 1)
 						break;
 					dependencies1_pos++;
 				}
-				
+
 				if (dependency_found == 1)
 				{
 					dependency_found = 0;
@@ -1641,24 +1642,24 @@ time_t t1, t2;
 				printf ("Dependency: %s\n", dependencies->name);
 				dependencies = dependencies->next;
 			}
-			
+
 			free (dependencies);
 			free (first_dependency);
 			free (prev_dependency);
 
 			time (&t2);
 			printf ("Elapsed seconds: %f\n", (double)difftime (t2, t1));
-			
+
 			// finish installation
 			if (callback != NULL)
 				callback (BSDPM_INSTALL_OPERATION_FINISH, sznames[names_pos]);
 
 			//error = bsdpm_core_install_port (sznames[total], callback);
 		}
-			
+
 		if (bsdpm_config.mode == 1)
 			error = bsdpm_core_install_package (sznames[names_pos], callback);
-		
+
 		names_pos++;
 		if (error != BSDPM_NOERROR)
 			break;
@@ -1668,7 +1669,7 @@ time_t t1, t2;
 	free (sznames);
 	free (token);
 	free (sztemp);
-	
+
 	return error;
 }
 */
@@ -1681,7 +1682,7 @@ FILE *fd;
 	{
 	char sz[BUFSIZ];
 	char szl[10 * 1024];
-	
+
 		memset (szl, '\0', sizeof (szl));
 		while (!feof (fd))
 		{

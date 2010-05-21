@@ -2,9 +2,9 @@
 /*
  * main.c
  * Copyright (C) Leinier Cruz Salfran 2010 <salfrancl@yahoo.es>
- * 
+ *
  * bsdpm is free software copyrighted by Leinier Cruz Salfran.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
  * are met:
@@ -16,7 +16,7 @@
  * 3. Neither the name ``Leinier Cruz Salfran'' nor the name of any other
  *    contributor may be used to endorse or promote products derived
  *    from this software without specific prior written permission.
- * 
+ *
  * bsdpm IS PROVIDED BY Leinier Cruz Salfran ``AS IS'' AND ANY EXPRESS
  * OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -71,19 +71,19 @@ char mode_table[64];
 		snprintf (title, sizeof (title), "BSD %s Manager", mode_table);
 		snprintf (title, sizeof (title), _(title));
 	}
-	
+
 	printf ("%s\n", title);
 	for (c = 0; c < strlen (title); c++)
 		printf ("=");
 	printf ("\n\n");
-	
+
 	return;
 }
 
 void bsdpm_show_usage (void)
 {
 	bsdpm_show_program_header (true);
-	
+
 	printf ("%s: bsdpm [%s]\n", _("Usage"), _("OPTION"));
 	printf ("%s:\n\tbsdpm -i ", _("Examples"));
 #if !defined(HAVE_GTK2) && !defined(HAVE_QT4)
@@ -131,7 +131,7 @@ void bsdpm_show_usage (void)
 #endif
 	printf ("]\n");
 #endif
-	
+
 	return;
 }
 
@@ -144,7 +144,7 @@ char message[80], size_total_human_readable[16], size_read_human_readable[16];
 	memset (size_read_human_readable, '\0', sizeof (size_read_human_readable));
 	bsdpm_core_translate_size_to_human_readable (size_total_human_readable, dltotal);
 	bsdpm_core_translate_size_to_human_readable (size_read_human_readable, dlnow);
-	
+
 	for (percent = 0; percent < 50; percent++)
 		printf ("%c", 0x8);
 
@@ -155,16 +155,16 @@ char message[80], size_total_human_readable[16], size_read_human_readable[16];
 	for (percent = strlen (message); percent < 50; percent++)
 		strcat (message, " ");
 
-	printf ("%s", message);	
+	printf ("%s", message);
 	fflush (stdout);
-	
+
 	return 0;
 }
 
 int bsdpm_process_callback (void *clientp, double dltotal, double dlnow, double ultotal, double ulnow)
 {
 int percent = 0;
-	
+
 	printf ("%c%c%c%c%c%c", 0x8, 0x8, 0x8, 0x8, 0x8, 0x8);
 
 	percent = (int)((dlnow * 100) / dltotal);
@@ -173,7 +173,7 @@ int percent = 0;
 		printf ("(%3i%%)", percent);
 		fflush (stdout);
 	}
-	
+
 	return 0;
 }
 
@@ -183,10 +183,10 @@ int iError = 0;
 char message[255];
 
 	bsdpm_show_program_header (false);
-	
+
 	snprintf (message, sizeof (message), "Updating %s list...", bsdpm_config.mode_table);
 	printf ("%s\n", _(message));
-	
+
 	printf ("  %s ", _("Downloading..."));
 	for (iError = (strlen (_("Downloading...")) + 3); iError < 50; iError++)
 		printf (" ");
@@ -226,7 +226,7 @@ char message[255];
 			printf ("%s.\n", _("Can't extract compressed INDEX file"));
 		}
 	} else {
-		// Error: Can't download compressed INDEX file	
+		// Error: Can't download compressed INDEX file
 		switch (iError)
 		{
 			case BSDPM_ERROR_CANT_DOWNLOAD_FILE:
@@ -304,7 +304,7 @@ char *www = _("WWW");
 			printf (" %s: %s\n", maintainer, port_information->maintainer);
 			for (i = 0; i < (mll - strlen (www)); i++) printf (" ");
 			printf (" %s: %s\n", www, port_information->www);
-			
+
 			// print foot line
 			for (i = 0; i < 60; i++)
 				printf ("=");
@@ -312,7 +312,7 @@ char *www = _("WWW");
 
 			break;
 	}
-	
+
 	return BSDPM_NOERROR;
 }
 
@@ -321,9 +321,9 @@ BSDPM_ERRORS bsdpm_search (void)
 BSDPM_ERRORS error;
 
 	bsdpm_show_program_header (false);
-	
+
 	error = bsdpm_core_search (search_criteria, bsdpm_search_callback);
-	
+
 	switch (error)
 	{
 		case BSDPM_ERROR_SEARCH_INVALID:
@@ -339,7 +339,7 @@ BSDPM_ERRORS error;
 	return error;
 }
 
-BSDPM_ERRORS bsdpm_install_callback (BSDPM_INSTALL_OPERATION operation, void *notify_data)
+BSDPM_ERRORS bsdpm_install_callback (BSDPM_INSTALL_OPERATION operation, const char *notify_data)
 {
 BSDPM_ERRORS error = BSDPM_NOERROR;
 char mode_table[16], **dadata;
@@ -350,25 +350,32 @@ unsigned short pos = 0;
 	strcpy (mode_table, bsdpm_config.mode_table);
 	mode_table[0] = toupper (mode_table[0]);
 	mode_table[strlen (mode_table) - 1] = '\0';
-	
+
 	switch (operation)
 	{
 		case BSDPM_INSTALL_OPERATION_STARTING:
-			printf ("[%s]\n", _("Starting installation")); 
+			printf ("[%s]\n", _("Starting installation"));
 			break;
 		case BSDPM_INSTALL_PORT_NOT_FOUND:
-			printf ("  %s: %s [%s]\n", _(mode_table), (char *)notify_data, _("NOT FOUND"));
+			printf ("  %s: %s [%s]\n", _(mode_table), notify_data, _("NOT FOUND"));
 			break;
 		case BSDPM_INSTALL_PORT_DUPLICATED:
-			dadata = (char **)notify_data;
+			dadata = bsdpm_core_split (notify_data, "|");
+
 			printf ("  %s '%s' %s.\n  %s.\n", _("Trying to install"), dadata[pos++], _("was found duplicated entries"), _("Select one, please"));
 			while (dadata[pos] != NULL)
 			{
 				if (strlen (dadata[pos]) > 0)
 					printf ("    %s\n", dadata[pos]);
+
 				pos++;
 			}
+
+			free (dadata);
 			break;
+        case BSDPM_INSTALL_OPERATION_CHECK_SANITY:
+            printf ("  [%s]\n", _("Checking sanity"));
+            break;
 /*		case BSDPM_INSTALL_OPERATION_CONFIGUREPORTS:
 			printf ("=> %s\n", _("Configuring all ports options"));
 			break;
@@ -420,7 +427,7 @@ unsigned short pos = 0;
 			break;
 */
 	}
-	
+
 	return error;
 }
 
@@ -429,7 +436,7 @@ BSDPM_ERRORS bsdpm_install (const char *names)
 BSDPM_ERRORS error = BSDPM_NOERROR;
 
 	bsdpm_show_program_header (false);
-	
+
 	error = bsdpm_core_install (names, bsdpm_install_callback);
 
 	switch (error)
@@ -449,7 +456,7 @@ BSDPM_ERRORS error = BSDPM_NOERROR;
 		default:
 			break;
 	}
-	
+
 	return error;
 }
 
@@ -476,14 +483,14 @@ struct utsname un;
 
 	//
 	// Core module
-	
+
 	// Directory path
 	snprintf (bsdpm_config.portsdir, sizeof (bsdpm_config.portsdir), "/usr/ports");
 	snprintf (bsdpm_config.distdir, sizeof (bsdpm_config.distdir), "%s/distfiles", bsdpm_config.portsdir);
 	snprintf (bsdpm_config.packagesdir, sizeof (bsdpm_config.packagesdir), "%s/packages", bsdpm_config.portsdir);
 	memset (bsdpm_config.wrkdir, '\0', sizeof (bsdpm_config.wrkdir));
 
-	// Programs path	
+	// Programs path
 	snprintf (bsdpm_config.make_path, sizeof (bsdpm_config.make_path), "/usr/bin/make");
 #ifdef __FreeBSD__
 	snprintf (bsdpm_config.pkg_add_path, sizeof (bsdpm_config.pkg_add_path), "/usr/sbin/pkg_add");
@@ -497,7 +504,7 @@ struct utsname un;
 	snprintf (bsdpm_config.pkg_add_path, sizeof (bsdpm_config.pkg_add_path), "/usr/sbin/pkg_add");
 	snprintf (bsdpm_config.pkg_delete_path, sizeof (bsdpm_config.pkg_delete_path), "/usr/sbin/pkg_delete");
 #endif
-	
+
 	// Packages repository URI
 	psztemp = getenv("PACKAGESITE");
 	if (psztemp != NULL)
@@ -515,7 +522,7 @@ struct utsname un;
 
 	//
 	// GTK module
-	
+
 	// UI definition
 	snprintf (bsdpm_config.gtk_ui_file, sizeof (bsdpm_config.gtk_ui_file), "%s/bsdpm/ui/bsdpm_gtk.ui", PACKAGE_DATA_DIR);
 
@@ -543,7 +550,7 @@ char szopt[16] = "hc:us:i:d:Um:C";
 #if defined(HAVE_GTK2) || defined(HAVE_QT4)
 	strcat (szopt, "I:");
 #endif
-		
+
 	while ((opt = getopt_long(argc, argv, szopt, longopts, NULL)) != -1) {
 		switch (opt) {
 			case 'c':
@@ -606,7 +613,7 @@ int main(int argc, char *argv[])
 #endif
 
 	bsdpm_set_defaultconfig ();
-	
+
 	bsdpm_parse_arguments (argc, argv);
 
 	if (strlen (bsdpm_config.config_filename) > 0)
@@ -638,7 +645,7 @@ int main(int argc, char *argv[])
 			default:
 				break;
 		}
-		
+
 	if (want_install == 1)
 		switch (bsdpm_install (install_packages))
 		{
@@ -658,7 +665,7 @@ int main(int argc, char *argv[])
 	if (want_upgrade == 1)
 		bsdpm_upgrade ();
 */
-		
+
 #if defined(HAVE_GTK2) || defined(HAVE_QT4)
 #ifdef HAVE_GTK2
 	if (interface == 1)
