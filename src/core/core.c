@@ -1248,6 +1248,15 @@ BSDPM_ERRORS error = BSDPM_NOERROR;
 //char command[255];
 char buffer[255];
 
+	// notify 'start' of the process
+	if (callback != NULL)
+		callback (BSDPM_INSTALL_OPERATION_STARTING, path);
+
+	// notify 'check_sanity' of the process
+	if (callback != NULL)
+		callback (BSDPM_INSTALL_OPERATION_STARTING_CHECK_SANITY, NULL);
+
+    // try to execute command
 
 	// initialize variables
 	memset (buffer, '\0', sizeof (buffer));
@@ -1330,14 +1339,10 @@ BSDPM_ERRORS error = BSDPM_NOERROR;
 BSDPM_ERRORS bsdpm_core_install (const char *names, bsdpm_core_install_callback callback)
 {
 BSDPM_ERRORS error = BSDPM_NOERROR;
-char **danames, *duplicated, temp_text1[BUFSIZ], temp_text2[BUFSIZ];
+char **danames, **dafullnames = NULL, *fullnames = NULL, *duplicated, temp_text1[BUFSIZ], temp_text2[BUFSIZ];
 unsigned short pos = 0, found = 0;
 sqlite3_stmt *statement;
 char sql[BUFSIZ];
-
-	// notify 'start' of the process
-	if (callback != NULL)
-		callback (BSDPM_INSTALL_OPERATION_STARTING, NULL);
 
 	// empty variables
 	memset (sql, '\0', sizeof (sql));
@@ -1356,7 +1361,12 @@ char sql[BUFSIZ];
 				found = 0;
 
 				// prepare sql query
-				snprintf (sql, sizeof (sql), "SELECT port_path, comment FROM %s WHERE (port_path LIKE '%%/%s');", bsdpm_config.mode_table, danames[pos]);
+				if (bsdpm_config.mode == 0)
+                    snprintf (sql, sizeof (sql), "SELECT port_path, comment FROM %s WHERE (port_path LIKE '%%/%s');", bsdpm_config.mode_table, danames[pos]);
+				if (bsdpm_config.mode == 1)
+				{
+                    snprintf (sql, sizeof (sql), "SELECT name, comment FROM %s WHERE (name = '%s');", bsdpm_config.mode_table, danames[pos]);
+				}
 				error = sqlite3_prepare_v2 (database, sql, sizeof (sql), &statement, NULL);
 				if (error != SQLITE_OK)
 				{
@@ -1372,20 +1382,37 @@ char sql[BUFSIZ];
 				{
 					found = 1;
 
+                    // empty variables
+                    memset (temp_text1, '\0', sizeof (temp_text1));
+                    memset (temp_text2, '\0', sizeof (temp_text2));
+
+                    // get 'port_path' field without '/usr/ports/' text
+                    snprintf (temp_text2, sizeof (temp_text2), "%s", sqlite3_column_text (statement, 0));
+                    bsdpm_core_substr (temp_text1, temp_text2, 11, strlen (temp_text2));
+
+                    // update 'danames[pos]' with complete 'port_path/distribution_name' value
+                    if (bsdpm_config.mode == 0)
+                    {
+                        if (fullnames != NULL)
+                        {
+                            realloc (fullnames,  sizeof (fullnames) + (sizeof (temp_text1) + (sizeof (char) * 2)));
+                            strcat (fullnames, "|");
+                            strcat (fullnames, temp_text1);
+                        }
+                        if (fullnames == NULL)
+                        {
+                            fullnames = malloc (sizeof (temp_text1) + (sizeof (char) * 2));
+                            strcpy (fullnames, temp_text1);
+                        }
+
+                    }
+
 					// put on 'duplicated' variable the result
 					// with format: 'port_path - comment'
 					if (callback != NULL)
 					{
-                        // empty variables
-						memset (temp_text1, '\0', sizeof (temp_text1));
-						memset (temp_text2, '\0', sizeof (temp_text2));
-
-						// get 'port_path' field with '/usr/ports/' text
-						snprintf (temp_text2, sizeof (temp_text2), "%s", sqlite3_column_text (statement, 0));
-						bsdpm_core_substr (temp_text1, temp_text2, 11, strlen (temp_text2));
-
-						// get 'comment' field
-						snprintf (temp_text2, sizeof (temp_text2), "%s", sqlite3_column_text (statement, 1));
+                        // get 'comment' field
+                        snprintf (temp_text2, sizeof (temp_text2), "%s", sqlite3_column_text (statement, 1));
 
 						// fill 'duplicated' variable
 						duplicated = malloc (sizeof (temp_text1) + (sizeof (char) * 4) + sizeof (temp_text2));
@@ -1427,19 +1454,27 @@ char sql[BUFSIZ];
 				// finalize the sql execution
 				sqlite3_finalize (statement);
 
-				// if there is not any result then notify
+				// if there is not any result then notify and exit
 				if (found == 0)
 				{
 					if (callback != NULL)
 						callback (BSDPM_INSTALL_PORT_NOT_FOUND, danames[pos]);
 
                     error = BSDPM_ERROR_INSTALLATION_ERROR;
+                    free (duplicated);
+                    goto end;
 				}
 
 				// if there is more than one results then notify
 				if (found == 2)
+				{
 					if (callback != NULL)
 						callback (BSDPM_INSTALL_PORT_DUPLICATED, duplicated);
+
+                    error = BSDPM_ERROR_INSTALLATION_ERROR;
+                    free (duplicated);
+                    goto end;
+				}
 
 				// free memory
 				if ((callback != NULL) && (found > 0))
@@ -1450,13 +1485,37 @@ char sql[BUFSIZ];
 		}
 	}
 
-	// notify 'check_sanity' of the process
-	if (callback != NULL)
-		callback (BSDPM_INSTALL_OPERATION_CHECK_SANITY, NULL);
+    // install ports/packages
+    pos = 0;
+    dafullnames = bsdpm_core_split (fullnames, "|");
+	if (dafullnames != NULL)
+	{
+		while (dafullnames[pos] != NULL)
+		{
+			if (strlen (dafullnames[pos]) > 0)
+			{
+                // is 'ports' mode active?
+                if (bsdpm_config.mode == 0)
+                    error = bsdpm_core_install_port (dafullnames[pos], callback);
+
+                // is 'packages' mode active?
+                if (bsdpm_config.mode == 1)
+                    error = bsdpm_core_install_package (dafullnames[pos], callback);
+
+                // there was an error?
+                if (error != BSDPM_NOERROR)
+                    break;
+			}
+
+			pos++;
+		}
+	}
 
 end:
 	// free memory
 	free (danames);
+	free (dafullnames);
+	free (fullnames);
 
 	return error;
 }

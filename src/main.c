@@ -354,7 +354,7 @@ unsigned short pos = 0;
 	switch (operation)
 	{
 		case BSDPM_INSTALL_OPERATION_STARTING:
-			printf ("[%s]\n", _("Starting installation"));
+			printf ("[%s '%s']\n", _("Starting installation"), notify_data);
 			break;
 		case BSDPM_INSTALL_PORT_NOT_FOUND:
 			printf ("  %s: %s [%s]\n", _(mode_table), notify_data, _("NOT FOUND"));
@@ -373,8 +373,11 @@ unsigned short pos = 0;
 
 			free (dadata);
 			break;
-        case BSDPM_INSTALL_OPERATION_CHECK_SANITY:
+        case BSDPM_INSTALL_OPERATION_STARTING_CHECK_SANITY:
             printf ("  [%s]\n", _("Checking sanity"));
+            break;
+        case BSDPM_INSTALL_OPERATION_CHECK_SANITY:
+            printf ("%s", notify_data);
             break;
 /*		case BSDPM_INSTALL_OPERATION_CONFIGUREPORTS:
 			printf ("=> %s\n", _("Configuring all ports options"));
