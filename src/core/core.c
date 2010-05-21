@@ -1333,7 +1333,11 @@ short bsdpm_core_install_package (const char *package, bsdpm_core_install_callba
 {
 BSDPM_ERRORS error = BSDPM_NOERROR;
 
-	return error;
+	// notify 'start' of the process
+	if (callback != NULL)
+		callback (BSDPM_INSTALL_OPERATION_STARTING, package);
+
+    return error;
 }
 
 BSDPM_ERRORS bsdpm_core_install (const char *names, bsdpm_core_install_callback callback)
@@ -1364,9 +1368,7 @@ char sql[BUFSIZ];
 				if (bsdpm_config.mode == 0)
                     snprintf (sql, sizeof (sql), "SELECT port_path, comment FROM %s WHERE (port_path LIKE '%%/%s');", bsdpm_config.mode_table, danames[pos]);
 				if (bsdpm_config.mode == 1)
-				{
-                    snprintf (sql, sizeof (sql), "SELECT name, comment FROM %s WHERE (name = '%s');", bsdpm_config.mode_table, danames[pos]);
-				}
+                    snprintf (sql, sizeof (sql), "SELECT name, version, comment FROM %s WHERE (name = '%s');", bsdpm_config.mode_table, danames[pos]);
 				error = sqlite3_prepare_v2 (database, sql, sizeof (sql), &statement, NULL);
 				if (error != SQLITE_OK)
 				{
@@ -1386,38 +1388,46 @@ char sql[BUFSIZ];
                     memset (temp_text1, '\0', sizeof (temp_text1));
                     memset (temp_text2, '\0', sizeof (temp_text2));
 
-                    // get 'port_path' field without '/usr/ports/' text
-                    snprintf (temp_text2, sizeof (temp_text2), "%s", sqlite3_column_text (statement, 0));
-                    bsdpm_core_substr (temp_text1, temp_text2, 11, strlen (temp_text2));
 
-                    // update 'danames[pos]' with complete 'port_path/distribution_name' value
+                    // get 'port_path' field without '/usr/ports/' text
                     if (bsdpm_config.mode == 0)
                     {
-                        if (fullnames != NULL)
-                        {
-                            realloc (fullnames,  sizeof (fullnames) + (sizeof (temp_text1) + (sizeof (char) * 2)));
-                            strcat (fullnames, "|");
-                            strcat (fullnames, temp_text1);
-                        }
-                        if (fullnames == NULL)
-                        {
-                            fullnames = malloc (sizeof (temp_text1) + (sizeof (char) * 2));
-                            strcpy (fullnames, temp_text1);
-                        }
+                        snprintf (temp_text2, sizeof (temp_text2), "%s", sqlite3_column_text (statement, 0));
+                        bsdpm_core_substr (temp_text1, temp_text2, 11, strlen (temp_text2));
+                    }
+                    // get 'name-version' fields
+                    if (bsdpm_config.mode == 1)
+                        snprintf (temp_text1, sizeof (temp_text1), "%s-%s", sqlite3_column_text (statement, 0), sqlite3_column_text (statement, 1));
 
+                    // update 'danames[pos]' with complete 'port_path/name-version' value
+                    if (fullnames != NULL)
+                    {
+                        realloc (fullnames,  sizeof (fullnames) + (sizeof (temp_text1) + (sizeof (char) * 2)));
+                        strcat (fullnames, "|");
+                        strcat (fullnames, temp_text1);
+                    }
+                    if (fullnames == NULL)
+                    {
+                        fullnames = malloc (sizeof (temp_text1) + (sizeof (char) * 2));
+                        strcpy (fullnames, temp_text1);
                     }
 
 					// put on 'duplicated' variable the result
-					// with format: 'port_path - comment'
+					// with format: 'port_path/name-version - comment'
 					if (callback != NULL)
 					{
                         // get 'comment' field
-                        snprintf (temp_text2, sizeof (temp_text2), "%s", sqlite3_column_text (statement, 1));
+                        if (bsdpm_config.mode == 0)
+                            snprintf (temp_text2, sizeof (temp_text2), "%s", sqlite3_column_text (statement, 1));
+                        if (bsdpm_config.mode == 1)
+                            snprintf (temp_text2, sizeof (temp_text2), "%s", sqlite3_column_text (statement, 2));
 
 						// fill 'duplicated' variable
-						duplicated = malloc (sizeof (temp_text1) + (sizeof (char) * 4) + sizeof (temp_text2));
+						duplicated = malloc (sizeof (danames[pos]) + (sizeof (temp_text1) + (sizeof (char) * 5) + sizeof (temp_text2)));
 						memset (duplicated, '\0', sizeof (duplicated));
-						strcpy (duplicated, temp_text1);
+						strcpy (duplicated, danames[pos]);
+                        strcat (duplicated, "|");
+                        strcat (duplicated, temp_text1);
 						strcat (duplicated, " - ");
 						strcat (duplicated, temp_text2);
 					}
@@ -1435,10 +1445,23 @@ char sql[BUFSIZ];
 							memset (temp_text1, '\0', sizeof (temp_text1));
 							memset (temp_text2, '\0', sizeof (temp_text2));
 
-							// get 'port_path' field with '/usr/ports/' text
-							snprintf (temp_text2, sizeof (temp_text2), "%s", sqlite3_column_text (statement, 0));
-							bsdpm_core_substr (temp_text1, temp_text2, 11, strlen (temp_text2));
-							snprintf (temp_text2, sizeof (temp_text2), "%s", sqlite3_column_text (statement, 1));
+                            // get 'port_path' field without '/usr/ports/' text
+                            if (bsdpm_config.mode == 0)
+                            {
+                                snprintf (temp_text2, sizeof (temp_text2), "%s", sqlite3_column_text (statement, 0));
+                                bsdpm_core_substr (temp_text1, temp_text2, 11, strlen (temp_text2));
+                            }
+                            // get 'name-version' fields
+                            if (bsdpm_config.mode == 1)
+                            {
+                                snprintf (temp_text1, sizeof (temp_text1), "%s-%s", sqlite3_column_text (statement, 0), sqlite3_column_text (statement, 1));
+                            }
+
+                            // get 'comment' field
+                            if (bsdpm_config.mode == 0)
+                                snprintf (temp_text2, sizeof (temp_text2), "%s", sqlite3_column_text (statement, 1));
+                            if (bsdpm_config.mode == 1)
+                                snprintf (temp_text2, sizeof (temp_text2), "%s", sqlite3_column_text (statement, 2));
 
 							// fill 'duplicated' variable
 							realloc (duplicated,  sizeof (duplicated) + (sizeof (temp_text1) + (sizeof (char) * 5) + sizeof (temp_text2)));

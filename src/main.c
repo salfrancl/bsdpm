@@ -362,11 +362,11 @@ unsigned short pos = 0;
 		case BSDPM_INSTALL_PORT_DUPLICATED:
 			dadata = bsdpm_core_split (notify_data, "|");
 
-			printf ("  %s '%s' %s.\n  %s.\n", _("Trying to install"), dadata[pos++], _("was found duplicated entries"), _("Select one, please"));
+			printf ("%s '%s' %s. %s:\n", _("While trying to install"), dadata[pos++], _("was found duplicated entries"), _("Select one from the following list, please"));
 			while (dadata[pos] != NULL)
 			{
 				if (strlen (dadata[pos]) > 0)
-					printf ("    %s\n", dadata[pos]);
+					printf ("  %s\n", dadata[pos]);
 
 				pos++;
 			}
@@ -567,8 +567,8 @@ char szopt[16] = "hc:us:i:d:Um:C";
 				break;
 			case 'm':
 				bsdpm_config.mode = (unsigned char) strtol (optarg, NULL, 10);
-				if (bsdpm_config.mode == 1)
-					snprintf (bsdpm_config.mode_table, sizeof (bsdpm_config.mode_table), "packages");
+				//if (bsdpm_config.mode == 1)
+				//	snprintf (bsdpm_config.mode_table, sizeof (bsdpm_config.mode_table), "packages");
 				break;
 			case 's':
 				want_search = 1;
