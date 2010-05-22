@@ -653,7 +653,6 @@ CURL *hnd = curl_easy_init();
 
 	// there is a 'socks_proxy' environment variable?
 	szenv = getenv("socks_proxy");
-
 	if (szenv != NULL)
 	{
 		curl_easy_setopt(hnd, CURLOPT_PROXY, szenv);
@@ -674,8 +673,14 @@ CURL *hnd = curl_easy_init();
 	fclose (outF);
 	curl_easy_cleanup(hnd);
 
+    // there was an error?
 	if ((int)ret != 0)
+	{
+        // close, delete 'filename' and exit
+	    fclose (outF);
+	    unlink (filename);
 		return BSDPM_ERROR_CANT_DOWNLOAD_FILE;
+	}
 
 	return BSDPM_NOERROR;
 }

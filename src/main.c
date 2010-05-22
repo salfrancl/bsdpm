@@ -140,23 +140,25 @@ int bsdpm_download_callback (void *clientp, double dltotal, double dlnow, double
 int percent = 0;
 char message[80], size_total_human_readable[16], size_read_human_readable[16];
 
-	memset (size_total_human_readable, '\0', sizeof (size_total_human_readable));
-	memset (size_read_human_readable, '\0', sizeof (size_read_human_readable));
-	bsdpm_core_translate_size_to_human_readable (size_total_human_readable, dltotal);
-	bsdpm_core_translate_size_to_human_readable (size_read_human_readable, dlnow);
-
-	for (percent = 0; percent < 50; percent++)
-		printf ("%c", 0x8);
-
 	percent = (int)((dlnow * 100) / dltotal);
 	if ((percent >= 0) && (percent <= 100))
+	{
+        memset (size_total_human_readable, '\0', sizeof (size_total_human_readable));
+        memset (size_read_human_readable, '\0', sizeof (size_read_human_readable));
+        bsdpm_core_translate_size_to_human_readable (size_total_human_readable, dltotal);
+        bsdpm_core_translate_size_to_human_readable (size_read_human_readable, dlnow);
+
+        for (percent = 0; percent < 50; percent++)
+            printf ("%c", 0x8);
+
 		snprintf (message, sizeof (message), "  %s [%s %s %s (%i%%)]", _("Downloading..."), size_read_human_readable, _("of"), size_total_human_readable, percent);
 
-	for (percent = strlen (message); percent < 50; percent++)
-		strcat (message, " ");
+        for (percent = strlen (message); percent < 50; percent++)
+            strcat (message, " ");
 
-	printf ("%s", message);
-	fflush (stdout);
+        printf ("%s", message);
+        fflush (stdout);
+	}
 
 	return 0;
 }
@@ -567,8 +569,8 @@ char szopt[16] = "hc:us:i:d:Um:C";
 				break;
 			case 'm':
 				bsdpm_config.mode = (unsigned char) strtol (optarg, NULL, 10);
-				//if (bsdpm_config.mode == 1)
-				//	snprintf (bsdpm_config.mode_table, sizeof (bsdpm_config.mode_table), "packages");
+				if (bsdpm_config.mode == 1)
+					snprintf (bsdpm_config.mode_table, sizeof (bsdpm_config.mode_table), "packages");
 				break;
 			case 's':
 				want_search = 1;
