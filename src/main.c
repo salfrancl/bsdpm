@@ -140,8 +140,7 @@ int bsdpm_download_callback (void *clientp, double dltotal, double dlnow, double
 int percent = 0;
 char message[80], size_total_human_readable[16], size_read_human_readable[16];
 
-	percent = (int)((dlnow * 100) / dltotal);
-	if ((percent >= 0) && (percent <= 100))
+	if (dlnow > 0)
 	{
         memset (size_total_human_readable, '\0', sizeof (size_total_human_readable));
         memset (size_read_human_readable, '\0', sizeof (size_read_human_readable));
@@ -151,6 +150,7 @@ char message[80], size_total_human_readable[16], size_read_human_readable[16];
         for (percent = 0; percent < 50; percent++)
             printf ("%c", 0x8);
 
+        percent = (int)((dlnow * 100) / dltotal);
 		snprintf (message, sizeof (message), "  %s [%s %s %s (%i%%)]", _("Downloading..."), size_read_human_readable, _("of"), size_total_human_readable, percent);
 
         for (percent = strlen (message); percent < 50; percent++)
