@@ -1350,6 +1350,8 @@ char sql[BUFSIZ];
 
 	// empty variables
 	memset (sql, '\0', sizeof (sql));
+	memset (temp_text1, '\0', sizeof (temp_text1));
+	memset (temp_text2, '\0', sizeof (temp_text2));
 
 	// split 'names' into dynamic array 'danames'
 	danames = bsdpm_core_split (names, " ");
@@ -1368,7 +1370,24 @@ char sql[BUFSIZ];
 				if (bsdpm_config.mode == 0)
                     snprintf (sql, sizeof (sql), "SELECT port_path, comment FROM %s WHERE (port_path LIKE '%%/%s');", bsdpm_config.mode_table, danames[pos]);
 				if (bsdpm_config.mode == 1)
-                    snprintf (sql, sizeof (sql), "SELECT name, version, comment FROM %s WHERE (name = '%s');", bsdpm_config.mode_table, danames[pos]);
+				{
+				    // construct the sql statement due 'danames[pos]' format:
+				    // - name           # name may contain '-' charater but the last component divided by '-'
+				    //                  # must not begin with a number. ie: mplayer-skins
+				    // - name-version   # the last component divideb by '-' of complete 'name-version' must begin
+				    //                  # with a number. ie: mplayer-skins-0.1
+
+				    // split 'danames[pos]' into name and version (if exists)
+				    bsdpm_core_split_packagename_into_name_version (danames[pos], temp_text1, temp_text2, '-');
+
+				    // check if 'version' begin with a number and fill 'sql' with proper sql statement
+				    if ((temp_text2[0] >= 0x30) && (temp_text2[0] <= 0x39))
+				    {
+                        snprintf (sql, sizeof (sql), "SELECT name, version, comment FROM %s WHERE ((name = '%s') AND (version = '%s'));", bsdpm_config.mode_table, temp_text1, temp_text2);
+				    } else {
+                        snprintf (sql, sizeof (sql), "SELECT name, version, comment FROM %s WHERE (name = '%s');", bsdpm_config.mode_table, danames[pos]);
+				    }
+				}
 				error = sqlite3_prepare_v2 (database, sql, sizeof (sql), &statement, NULL);
 				if (error != SQLITE_OK)
 				{
@@ -1399,7 +1418,9 @@ char sql[BUFSIZ];
                     if (bsdpm_config.mode == 1)
                         snprintf (temp_text1, sizeof (temp_text1), "%s-%s", sqlite3_column_text (statement, 0), sqlite3_column_text (statement, 1));
 
-                    // update 'danames[pos]' with complete 'port_path/name-version' value
+                    // update 'fullnames' with complete 'port_path/name-version' value
+                    // this variable contains the complete name of port/package to be
+                    // installed
                     if (fullnames != NULL)
                     {
                         realloc (fullnames,  sizeof (fullnames) + (sizeof (temp_text1) + (sizeof (char) * 2)));
@@ -1438,7 +1459,7 @@ char sql[BUFSIZ];
 						found = 2;
 
                         // add to 'duplicated' variable the result
-                        // with format: '|port_path - comment'
+                        // with format: '|port_path/name-version - comment'
 						if (callback != NULL)
 						{
 						    // empty variables
@@ -1483,9 +1504,9 @@ char sql[BUFSIZ];
 					if (callback != NULL)
 						callback (BSDPM_INSTALL_PORT_NOT_FOUND, danames[pos]);
 
-                    error = BSDPM_ERROR_INSTALLATION_ERROR;
-                    free (duplicated);
-                    goto end;
+                    //error = BSDPM_ERROR_INSTALLATION_ERROR;
+                    //free (duplicated);
+                    //goto end;
 				}
 
 				// if there is more than one results then notify
@@ -1509,36 +1530,42 @@ char sql[BUFSIZ];
 	}
 
     // install ports/packages
-    pos = 0;
-    dafullnames = bsdpm_core_split (fullnames, "|");
-	if (dafullnames != NULL)
-	{
-		while (dafullnames[pos] != NULL)
-		{
-			if (strlen (dafullnames[pos]) > 0)
-			{
-                // is 'ports' mode active?
-                if (bsdpm_config.mode == 0)
-                    error = bsdpm_core_install_port (dafullnames[pos], callback);
+    if (fullnames != NULL)
+    {
+        pos = 0;
+        dafullnames = bsdpm_core_split (fullnames, "|");
+        if (dafullnames != NULL)
+        {
+            while (dafullnames[pos] != NULL)
+            {
+                if (strlen (dafullnames[pos]) > 0)
+                {
+                    // is 'ports' mode active?
+                    if (bsdpm_config.mode == 0)
+                        error = bsdpm_core_install_port (dafullnames[pos], callback);
 
-                // is 'packages' mode active?
-                if (bsdpm_config.mode == 1)
-                    error = bsdpm_core_install_package (dafullnames[pos], callback);
+                    // is 'packages' mode active?
+                    if (bsdpm_config.mode == 1)
+                        error = bsdpm_core_install_package (dafullnames[pos], callback);
 
-                // there was an error?
-                if (error != BSDPM_NOERROR)
-                    break;
-			}
+                    // there was an error?
+                    if (error != BSDPM_NOERROR)
+                        break;
+                }
 
-			pos++;
-		}
-	}
+                pos++;
+            }
+        }
+    }
 
 end:
 	// free memory
 	free (danames);
-	free (dafullnames);
-	free (fullnames);
+	if (found != 0)
+	{
+        free (dafullnames);
+        free (fullnames);
+	}
 
 	return error;
 }
