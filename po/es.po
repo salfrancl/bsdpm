@@ -82,29 +82,35 @@ msgstr "solo paquetes"
 msgid "Start BSDPM with a graphical user interface"
 msgstr "Inicia BSDPM con una interfaz gráfica de usuario"
 
-msgid "Updating packages list..."
-msgstr "Actualizando la lista de paquetes..."
+msgid "Updating packages list"
+msgstr "Actualizando la lista de paquetes"
 
-msgid "Updating ports list..."
-msgstr "Actualizando la lista de portes..."
+msgid "Updating ports list"
+msgstr "Actualizando la lista de portes"
 
-msgid "Downloading..."
-msgstr "Descargando..."
+msgid "Downloading"
+msgstr "Descargando"
 
 msgid "Can't download INDEX file"
 msgstr "No se puede descargar el archivo INDEX"
 
-msgid "Extracting..."
-msgstr "Extrayendo..."
+msgid "Extracting"
+msgstr "Extrayendo"
 
 msgid "Can't extract compressed INDEX file"
 msgstr "No se puede descomprimir el archivo INDEX"
 
-msgid "Processing INDEX file..."
-msgstr "Procesando el archivo INDEX..."
+msgid "Processing INDEX file"
+msgstr "Procesando el archivo INDEX"
+
+msgid "Processing DEPENCENCIES"
+msgstr "Procesando DEPENDENCIAS"
 
 msgid "Can't process INDEX file"
 msgstr "No se puede procesar el archivo INDEX"
+
+msgid "Can't process DEPENDENCIES"
+msgstr "No se pueden procesar las DEPENDENCIAS"
 
 msgid "INDEX file is invalid, there is not access or doesn't exists"
 msgstr "El archivo INDEX es inválido, no tiene acceso o no existe"

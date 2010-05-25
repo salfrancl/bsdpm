@@ -151,7 +151,7 @@ char message[80], size_total_human_readable[16], size_read_human_readable[16];
             printf ("%c", 0x8);
 
         percent = (int)((dlnow * 100) / dltotal);
-		snprintf (message, sizeof (message), "  %s [%s %s %s (%i%%)]", _("Downloading..."), size_read_human_readable, _("of"), size_total_human_readable, percent);
+		snprintf (message, sizeof (message), "  %s... [%s %s %s (%i%%)]", _("Downloading"), size_read_human_readable, _("of"), size_total_human_readable, percent);
 
         for (percent = strlen (message); percent < 50; percent++)
             strcat (message, " ");
@@ -181,40 +181,55 @@ int percent = 0;
 
 void bsdpm_update_packages_list (void)
 {
-int iError = 0;
+BSDPM_ERRORS error = BSDPM_NOERROR;
+int c = 0;
 char message[255];
 
 	bsdpm_show_program_header (false);
 
-	snprintf (message, sizeof (message), "Updating %s list...", bsdpm_config.mode_table);
-	printf ("%s\n", _(message));
+	snprintf (message, sizeof (message), "Updating %s list", bsdpm_config.mode_table);
+	printf ("%s...\n", _(message));
 
-	printf ("  %s ", _("Downloading..."));
-	for (iError = (strlen (_("Downloading...")) + 3); iError < 50; iError++)
+	printf ("  %s... ", _("Downloading"));
+	for (c = (strlen (_("Downloading")) + 6); c < 50; c++)
 		printf (" ");
 	fflush (stdout);
-	iError = bsdpm_core_download_packageslist (bsdpm_download_callback);
-	if (iError == BSDPM_NOERROR)
+	error = bsdpm_core_download_packageslist (bsdpm_download_callback);
+	if (error == BSDPM_NOERROR)
 	{
 		printf ("\n");
 		// is 'packages mode' active?
 		if (bsdpm_config.mode == 1)
 		{
-			printf ("  %s\n", _("Extracting..."));
-			iError = bsdpm_core_extract_compressed_packageslist ();
+			printf ("  %s...\n", _("Extracting"));
+			error = bsdpm_core_extract_compressed_packageslist ();
 		}
-		if (iError == BSDPM_NOERROR)
+		if (error == BSDPM_NOERROR)
 		{
-			printf ("  %s       ", _("Processing INDEX file..."));
+			printf ("  %s...       ", _("Processing INDEX file"));
 			fflush (stdout);
-			iError = bsdpm_core_process_index_file (bsdpm_process_callback);
-			if (iError == BSDPM_NOERROR)
+			error = bsdpm_core_process_index_file (bsdpm_process_callback);
+			if (error == BSDPM_NOERROR)
 			{
-				bsdpm_core_unlink_packageslist ();
-				printf ("\n%s.\n", _("Done"));
+                printf ("\n  %s...       ", _("Processing DEPENCENCIES"));
+                fflush (stdout);
+                error = bsdpm_core_process_dependencies (bsdpm_process_callback);
+                if (error == BSDPM_NOERROR)
+                {
+                    bsdpm_core_unlink_packageslist ();
+                    printf ("\n%s.\n", _("Done"));
+                } else {
+                    switch (error)
+                    {
+                        case BSDPM_ERROR_DATABASE_IS_CORRUPT:
+                            printf ("%s: %s.\n", _("Can't process DEPENDENCIES"), _("The database structure is corrupt"));
+                            break;
+                        default:
+                            break;
+                    }
+                }
 			} else {
-				// Error: Can't write files to disk
-				switch (iError)
+				switch (error)
 				{
 					case BSDPM_ERROR_INVALID_FILE:
 						printf ("%s: %s.\n", _("Can't process INDEX file"), _("INDEX file is invalid, there is not access or doesn't exists"));
@@ -222,18 +237,21 @@ char message[255];
 					case BSDPM_ERROR_CANT_OPEN_FILE:
 						printf ("%s: %s.\n", _("Can't process INDEX file"), _("INDEX can't be openned"));
 						break;
+                    default:
+                        break;
 				}
 			}
 		} else {
 			printf ("%s.\n", _("Can't extract compressed INDEX file"));
 		}
 	} else {
-		// Error: Can't download compressed INDEX file
-		switch (iError)
+		switch (error)
 		{
 			case BSDPM_ERROR_CANT_DOWNLOAD_FILE:
 				printf ("\n[%s] %s: %s.\n", _("ERROR"), _("Can't download INDEX file"), _("The file can't be downloaded"));
 				break;
+            default:
+                break;
 		}
 	}
 
@@ -244,8 +262,8 @@ BSDPM_ERRORS bsdpm_search_callback (BSDPM_SEARCH_OPERATION operation, bsdpm_port
 {
 unsigned short i = 0, mll = 0;
 char *state = _("State");
-char *name = _("Distribution name");
-char *version = _("Available version");
+char *distribution_name = _("Distribution name");
+char *available_version = _("Available version");
 char *installed_version = _("Installed version");
 char *port_path = _("Port path");
 char *comment = _("Comment");
@@ -264,8 +282,8 @@ char *www = _("WWW");
 
 			// get the maximum label length
 			mll = strlen (state);
-			mll = (strlen (name) > mll ? strlen (name) : mll);
-			mll = (strlen (version) > mll ? strlen (version) : mll);
+			mll = (strlen (distribution_name) > mll ? strlen (distribution_name) : mll);
+			mll = (strlen (available_version) > mll ? strlen (available_version) : mll);
 			mll = (strlen (installed_version) > mll ? strlen (installed_version) : mll);
 			mll = (strlen (port_path) > mll ? strlen (port_path) : mll);
 			mll = (strlen (comment) > mll ? strlen (comment) : mll);
@@ -282,19 +300,19 @@ char *www = _("WWW");
 			if (port_information->state == '2')
 				printf ("%s", _("Upgradable"));
 			printf ("\n");
-			for (i = 0; i < (mll - strlen (name)); i++) printf (" ");
-			printf (" %s: %s\n", name, port_information->name);
+			for (i = 0; i < (mll - strlen (distribution_name)); i++) printf (" ");
+			printf (" %s: %s\n", distribution_name, port_information->distribution_name);
 			if ((port_information->state == '0') || (port_information->state == '2'))
 			{
-				for (i = 0; i < (mll - strlen (version)); i++) printf (" ");
-				printf (" %s: %s\n", version, port_information->version);
+				for (i = 0; i < (mll - strlen (available_version)); i++) printf (" ");
+				printf (" %s: %s\n", available_version, port_information->available_version);
 			}
 			if ((port_information->state == '1') || (port_information->state == '2'))
 			{
 				for (i = 0; i < (mll - strlen (installed_version)); i++) printf (" ");
 				printf (" %s: ", installed_version);
 				if (port_information->state == '1')
-					printf ("%s\n", port_information->version);
+					printf ("%s\n", port_information->available_version);
 				if (port_information->state == '2')
 					printf ("%s\n", port_information->installed_version);
 			}

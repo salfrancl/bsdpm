@@ -17,7 +17,7 @@
  *    contributor may be used to endorse or promote products derived
  *    from this software without specific prior written permission.
  *
- * libbsdpm IS PROVIDED BY Leinier Cruz Salfran ``AS IS'' AND ANY EXPRESS
+ * libbsdpm_core IS PROVIDED BY Leinier Cruz Salfran ``AS IS'' AND ANY EXPRESS
  * OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
  * ARE DISCLAIMED.  IN NO EVENT SHALL Leinier Cruz Salfran OR ANY OTHER CONTRIBUTORS
@@ -604,13 +604,16 @@ int error = 0;
 	// if database doesn't exists create structure
 	if (database_exists == 0)
 	{
-		sqlite3_exec(database, "CREATE TABLE ports (\"ports_id\" INTEGER NOT NULL, \"state\" TEXT NOT NULL, \"name\" TEXT NOT NULL, \"version\" TEXT NOT NULL, \"installed_version\" TEXT, \"port_path\" TEXT NOT NULL, \"comment\" TEXT NOT NULL, \"description_file\" TEXT NOT NULL, \"maintainer\" TEXT NOT NULL, \"www\" TEXT, \"dependencies\" TEXT, PRIMARY KEY (ports_id));", NULL, 0, NULL);
-		sqlite3_exec(database, "CREATE TABLE \"ports_categories\" (\"p_id\" INTEGER NOT NULL, \"category_id\" INTEGER NOT NULL);", NULL, 0, NULL);
-		sqlite3_exec(database, "CREATE TABLE packages (\"packages_id\" INTEGER NOT NULL, \"state\" TEXT NOT NULL, \"name\" TEXT NOT NULL, \"version\" TEXT NOT NULL, \"installed_version\" TEXT, \"port_path\" TEXT NOT NULL, \"comment\" TEXT NOT NULL, \"description_file\" TEXT NOT NULL, \"maintainer\" TEXT NOT NULL, \"www\" TEXT, \"dependencies\" TEXT, PRIMARY KEY (packages_id));", NULL, 0, NULL);
-		sqlite3_exec(database, "CREATE TABLE \"packages_categories\" (\"p_id\" INTEGER NOT NULL, \"category_id\" INTEGER NOT NULL);", NULL, 0, NULL);
+		sqlite3_exec(database, "CREATE TABLE \"ports\" (\"id\" INTEGER NOT NULL, \"state\" TEXT NOT NULL, \"distribution_name\" TEXT NOT NULL, \"available_version\" TEXT NOT NULL, \"installed_version\" TEXT, \"port_path\" TEXT NOT NULL, \"comment\" TEXT NOT NULL, \"description_file\" TEXT NOT NULL, \"maintainer\" TEXT NOT NULL, \"www\" TEXT, PRIMARY KEY (id));", NULL, NULL, NULL);
+		sqlite3_exec(database, "CREATE TABLE \"ports_categories\" (\"id\" INTEGER NOT NULL, \"category_id\" INTEGER NOT NULL);", NULL, NULL, NULL);
+		sqlite3_exec(database, "CREATE TABLE \"ports_dependencies\" (\"id\" INTEGER NOT NULL, \"dependency_id\" INTEGER NOT NULL);", NULL, NULL, NULL);
+		sqlite3_exec(database, "CREATE TABLE \"packages\" (\"id\" INTEGER NOT NULL, \"state\" TEXT NOT NULL, \"distribution_name\" TEXT NOT NULL, \"available_version\" TEXT NOT NULL, \"installed_version\" TEXT, \"port_path\" TEXT NOT NULL, \"comment\" TEXT NOT NULL, \"description_file\" TEXT NOT NULL, \"maintainer\" TEXT NOT NULL, \"www\" TEXT, PRIMARY KEY (id));", NULL, NULL, NULL);
+		sqlite3_exec(database, "CREATE TABLE \"packages_categories\" (\"id\" INTEGER NOT NULL, \"category_id\" INTEGER NOT NULL);", NULL, NULL, NULL);
+		sqlite3_exec(database, "CREATE TABLE \"packages_dependencies\" (\"id\" INTEGER NOT NULL, \"dependency_id\" INTEGER NOT NULL);", NULL, NULL, NULL);
+		sqlite3_exec(database, "CREATE TABLE \"dependencies_temp\" (\"id\" INTEGER NOT NULL, \"dependencies\" TEXT);", NULL, NULL, NULL);
 		sqlite3_exec(database, "COMMIT;", NULL, 0, NULL);
-		sqlite3_exec(database, "CREATE UNIQUE INDEX \"ports_index\" on \"ports\" (\"ports_id\" ASC);", NULL, 0, NULL);
-		sqlite3_exec(database, "CREATE UNIQUE INDEX \"packages_index\" on \"packages\" (\"packages_id\" ASC);", NULL, 0, NULL);
+		sqlite3_exec(database, "CREATE UNIQUE INDEX \"ports_index\" on \"ports\" (\"id\" ASC);", NULL, NULL, NULL);
+		sqlite3_exec(database, "CREATE UNIQUE INDEX \"packages_index\" on \"packages\" (\"id\" ASC);", NULL, NULL, NULL);
 		sqlite3_exec(database, "COMMIT;", NULL, 0, NULL);
 	}
 
@@ -777,13 +780,13 @@ int sec_prev = 0;
 
 	// check if INDEX file exists
 	memset (index_path, '\0', sizeof (index_path));
-	// is 'ports mode' active?
+	// is 'ports' mode active?
 	if (bsdpm_config.mode == 0)
 	{
 		snprintf (index_path, sizeof (index_path), "%s/INDEX-%i", bsdpm_config.bsdpm_localstatedir, __FreeBSD_version);
 		index_path[strlen (index_path) - 5] = '\0';
 	}
-	// is 'packages mode' active?
+	// is 'packages' mode active?
 	if (bsdpm_config.mode == 1)
 		snprintf (index_path, sizeof (index_path), "%s/INDEX", bsdpm_config.bsdpm_localstatedir);
 	if (stat (index_path, &ss) == 0)
@@ -988,6 +991,8 @@ int sec_prev = 0;
 				bsdpm_core_encode_string (comment, temp_text1);
 				snprintf (temp_large_text, sizeof (temp_large_text), "INSERT INTO \"%s\" VALUES(%i,'%s','%s','%s','%s','%s','%s','%s','%s','%s','%s');", bsdpm_config.mode_table, package_id, state, name, version, installed_version, port_path, temp_text1, description_file, maintainer, www, dependencies);
 				sqlite3_exec(database, temp_large_text, NULL, NULL, NULL);
+				snprintf (temp_large_text, sizeof (temp_large_text), "INSERT INTO \"dependencies_temp\" VALUES(%i,'%s');", package_id, dependencies);
+				sqlite3_exec(database, temp_large_text, NULL, NULL, NULL);
 
 				// store categories
 				if (strlen (categories) > 0)
@@ -1021,6 +1026,102 @@ int sec_prev = 0;
 	return BSDPM_NOERROR;
 }
 
+BSDPM_ERRORS bsdpm_core_process_dependencies (curl_progress_callback callback)
+{
+BSDPM_ERRORS error;
+sqlite3_stmt *statement1, *statement2;
+char sql[BUFSIZ], *sztemp, *sztoken, distribution_name[255], available_version[32];
+unsigned int total, processed;
+
+    //initialize variables
+    error = BSDPM_NOERROR;
+    memset (sql, '\0', sizeof (sql));
+    processed = total = 0;
+
+    //
+    // count total of available ports/packages
+
+    // prepare sql statement
+    snprintf (sql, sizeof (sql), "SELECT COUNT (id) FROM dependencies_temp;");
+	error = sqlite3_prepare_v2 (database, sql, sizeof (sql), &statement1, NULL);
+	if (error != SQLITE_OK)
+	{
+		error = BSDPM_ERROR_DATABASE_IS_CORRUPT;
+		goto end;
+	}
+
+	// process result
+	error = sqlite3_step (statement1);
+	if (error == SQLITE_ROW)
+		if (callback != NULL)
+            total = sqlite3_column_int (statement1, 0);
+
+    // finalize
+    sqlite3_finalize (statement1);
+
+    //
+    // process dependencies
+
+    // prepare sql statement
+    error = sqlite3_prepare_v2 (database, "SELECT * FROM dependencies_temp;", -1, &statement1, NULL);
+	if (error != SQLITE_OK)
+	{
+		error = BSDPM_ERROR_DATABASE_IS_CORRUPT;
+		goto end;
+	}
+
+	// process results
+	while ((error = sqlite3_step (statement1)) == SQLITE_ROW)
+	{
+        // process chunk of text divided by ' '
+        sztemp = strdup ((char *)sqlite3_column_text (statement1, 1));
+        while ((sztoken = strsep(&sztemp, " ")) != NULL)
+        {
+            // empty variables
+            memset (distribution_name, '\0', sizeof (distribution_name));
+            memset (available_version, '\0', sizeof (available_version));
+
+            // split 'sztoken' into name and version
+            bsdpm_core_split_packagename_into_name_version (sztoken, distribution_name, available_version, '-');
+
+            // insert dependency into database
+            snprintf (sql, sizeof (sql), "SELECT id FROM %s WHERE ((distribucion_name = '%s') AND (available_version = '%s'));", bsdpm_config.mode_table, distribution_name, available_version);
+            sqlite3_prepare_v2 (database, sql, sizeof (sql), &statement2, NULL);
+            error = sqlite3_step (statement2);
+            if (error == SQLITE_ROW)
+            {
+                snprintf (sql, sizeof (sql), "INSERT INTO %s_dependencies VALUES(%i, %i);", bsdpm_config.mode_table, sqlite3_column_int (statement1, 0), sqlite3_column_int (statement2, 0));
+                bsdpm_core_database_execute (sql, NULL, NULL);
+            }
+            sqlite3_finalize (statement2);
+        }
+
+        // free memory
+        free (sztemp);
+        free (sztoken);
+
+        // notify
+        if (callback != NULL)
+        {
+            processed++;
+            callback (NULL, total, processed, 0, 0);
+        }
+
+	}
+
+    // process has finished .. empty unuseful table
+	bsdpm_core_database_execute ("DELETE FROM dependencies_temp;", NULL, NULL);
+	bsdpm_core_database_execute ("COMMIT;", NULL, NULL);
+
+	error = BSDPM_NOERROR;
+
+end:
+	// finalize
+	sqlite3_finalize (statement1);
+
+    return error;
+}
+
 void bsdpm_core_unlink_packageslist (void)
 {
 char file_path[255];
@@ -1051,7 +1152,7 @@ unsigned short found = 0;
 
 	// do search
 	memset (&pi, '\0', sizeof (pi));
-	sql = sqlite3_mprintf ("SELECT %s_id, state, name, version, installed_version, port_path, comment, maintainer, www FROM %s WHERE (%s);", bsdpm_config.mode_table, bsdpm_config.mode_table, search_criteria);
+	sql = sqlite3_mprintf ("SELECT id, state, distribution_name AS \"name\", available_version AS \"version\", installed_version, port_path AS \"path\", comment, maintainer, www FROM %s WHERE (%s);", bsdpm_config.mode_table, search_criteria);
 
 	if (callback != NULL)
 		callback (BSDPM_SEARCH_OPERATION_SEARCHING, NULL);
@@ -1071,8 +1172,8 @@ unsigned short found = 0;
 		{
 			pi.id = sqlite3_column_int (statement, 0);
 			pi.state = sqlite3_column_text (statement, 1)[0];
-			snprintf (pi.name, sizeof (pi.name), "%s", sqlite3_column_text (statement, 2));
-			snprintf (pi.version, sizeof (pi.version), "%s", sqlite3_column_text (statement, 3));
+			snprintf (pi.distribution_name, sizeof (pi.distribution_name), "%s", sqlite3_column_text (statement, 2));
+			snprintf (pi.available_version, sizeof (pi.available_version), "%s", sqlite3_column_text (statement, 3));
 			snprintf (pi.installed_version, sizeof (pi.installed_version), "%s", sqlite3_column_text (statement, 4));
 			snprintf (pi.port_path, sizeof (pi.port_path), "%s", sqlite3_column_text (statement, 5));
 			snprintf (pi.comment, sizeof (pi.comment), "%s", sqlite3_column_text (statement, 6));
@@ -1090,10 +1191,11 @@ unsigned short found = 0;
 		error = BSDPM_ERROR_SEARCH_HAS_NO_RESULTS;
 
 
-	// free memory
+	// finalize
 	sqlite3_finalize (statement);
 
 end:
+    //free memory
 	sqlite3_free (sql);
 
 	return error;

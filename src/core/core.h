@@ -17,7 +17,7 @@
  *    contributor may be used to endorse or promote products derived
  *    from this software without specific prior written permission.
  *
- * libbsdpm IS PROVIDED BY Leinier Cruz Salfran ``AS IS'' AND ANY EXPRESS
+ * libbsdpm_core IS PROVIDED BY Leinier Cruz Salfran ``AS IS'' AND ANY EXPRESS
  * OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
  * ARE DISCLAIMED.  IN NO EVENT SHALL Leinier Cruz Salfran OR ANY OTHER CONTRIBUTORS
@@ -266,8 +266,8 @@ struct _bsdpm_config {
 struct _bsdpm_port_information {
 	unsigned int id;
 	char state;
-	char name[255];
-	char version[32];
+	char distribution_name[255];
+	char available_version[32];
 	char installed_version[32];
 	char port_path[255];
 	char comment[1024];
@@ -307,6 +307,7 @@ BSDPM_ERRORS bsdpm_core_download_file (const char *uri, curl_progress_callback c
 BSDPM_ERRORS bsdpm_core_download_packageslist (curl_progress_callback callback);
 BSDPM_ERRORS bsdpm_core_extract_compressed_packageslist (void);
 BSDPM_ERRORS bsdpm_core_process_index_file (curl_progress_callback callback);
+BSDPM_ERRORS bsdpm_core_process_dependencies (curl_progress_callback callback);
 void bsdpm_core_unlink_packageslist (void);
 BSDPM_ERRORS bsdpm_core_search (const char *search_criteria, bsdpm_core_search_callback callback);
 //short bsdpm_core_install_port (char *const path, bsdpm_core_install_callback);
