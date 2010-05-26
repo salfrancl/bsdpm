@@ -1177,6 +1177,8 @@ unsigned short found = 0;
 			snprintf (pi.installed_version, sizeof (pi.installed_version), "%s", sqlite3_column_text (statement, 4));
 			snprintf (pi.port_path, sizeof (pi.port_path), "%s", sqlite3_column_text (statement, 5));
 			snprintf (pi.comment, sizeof (pi.comment), "%s", sqlite3_column_text (statement, 6));
+			if (strlen (pi.comment) > 0)
+                bsdpm_core_decode_string (pi.comment, pi.comment);
 			snprintf (pi.maintainer, sizeof (pi.maintainer), "%s", sqlite3_column_text (statement, 7));
 			snprintf (pi.www, sizeof (pi.www), "%s", sqlite3_column_text (statement, 8));
 
