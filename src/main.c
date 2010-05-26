@@ -211,9 +211,9 @@ char message[255];
 			error = bsdpm_core_process_index_file (bsdpm_process_callback);
 			if (error == BSDPM_NOERROR)
 			{
-                printf ("\n  %s...       ", _("Processing dependencies"));
+                /*printf ("\n  %s...       ", _("Processing dependencies"));
                 fflush (stdout);
-                error = bsdpm_core_process_dependencies (bsdpm_process_callback);
+                error = bsdpm_core_process_dependencies (bsdpm_process_callback);*/
                 if (error == BSDPM_NOERROR)
                 {
                     bsdpm_core_unlink_packageslist ();

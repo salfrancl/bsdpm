@@ -756,7 +756,7 @@ BSDPM_ERRORS bsdpm_core_process_index_file (curl_progress_callback callback)
 struct stat ss;
 FILE *inF;
 char index_path[255], *fts_argv[2], index_line[80 * 1024], *token, temp_text1[BUFSIZ * 2], temp_text2[BUFSIZ], temp_large_text[70 * 1024], temp_comp_text1[2][255];
-char state[2], distribution_name[255], available_version[32], installed_version[32], port_path[255], comment[BUFSIZ * 2], description_file[255], maintainer[128], categories[255], www[255], dependencies[70 * 1024];
+char state[2], distribution_name[255], available_version[32], installed_version[32], port_path[255], comment[BUFSIZ * 2], description_file[255], maintainer[128], categories[255], www[255]; //, dependencies[70 * 1024];
 int pos = 0, chunk_pos1 = 0, chunk_pos2 = 0, temp_int1 = 0, temp_int2 = 0, temp_int3 = 0;
 unsigned int package_id = 1;
 FTS *fts_p = NULL;
@@ -895,7 +895,7 @@ int sec_prev = 0;
 				memset (maintainer, '\0', sizeof (maintainer));
 				memset (categories, '\0', sizeof (categories));
 				memset (www, '\0', sizeof (www));
-				memset (dependencies, '\0', sizeof (dependencies));
+				//memset (dependencies, '\0', sizeof (dependencies));
 
 				// initialize variables
 				pos = chunk_pos1 = chunk_pos2 = temp_int1 = temp_int2 = temp_int3 = 0;
@@ -965,7 +965,7 @@ int sec_prev = 0;
 									strncpy (categories, temp_large_text, sizeof (categories));
 									break;
 								// dependencies
-								case 7:
+								/*case 7:
 								case 8:
 								case 10:
 								case 11:
@@ -973,7 +973,7 @@ int sec_prev = 0;
 										if (strlen (temp_large_text) > 0)
 											strcat (dependencies, " ");
 									strcat (dependencies, temp_large_text);
-									break;
+									break;*/
 								// www
 								case 9:
 									strncpy (www, temp_large_text, sizeof (www));
@@ -991,8 +991,8 @@ int sec_prev = 0;
 				bsdpm_core_encode_string (comment, temp_text1);
 				snprintf (temp_large_text, sizeof (temp_large_text), "INSERT INTO %s VALUES(%i,'%s','%s','%s','%s','%s','%s','%s','%s','%s');", bsdpm_config.mode_table, package_id, state, distribution_name, available_version, installed_version, port_path, temp_text1, description_file, maintainer, www);
 				sqlite3_exec(database, temp_large_text, NULL, NULL, NULL);
-				snprintf (temp_large_text, sizeof (temp_large_text), "INSERT INTO dependencies_temp VALUES(%i,'%s');", package_id, dependencies);
-				sqlite3_exec(database, temp_large_text, NULL, NULL, NULL);
+				//snprintf (temp_large_text, sizeof (temp_large_text), "INSERT INTO dependencies_temp VALUES(%i,'%s');", package_id, dependencies);
+				//sqlite3_exec(database, temp_large_text, NULL, NULL, NULL);
 
 				// store categories
 				if (strlen (categories) > 0)
