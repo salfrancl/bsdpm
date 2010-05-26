@@ -756,7 +756,7 @@ BSDPM_ERRORS bsdpm_core_process_index_file (curl_progress_callback callback)
 struct stat ss;
 FILE *inF;
 char index_path[255], *fts_argv[2], index_line[80 * 1024], *token, temp_text1[BUFSIZ * 2], temp_text2[BUFSIZ], temp_large_text[70 * 1024], temp_comp_text1[2][255];
-char state[2], name[255], version[32], installed_version[32], port_path[255], comment[BUFSIZ * 2], description_file[255], maintainer[128], categories[255], www[255], dependencies[70 * 1024];
+char state[2], distribution_name[255], available_version[32], installed_version[32], port_path[255], comment[BUFSIZ * 2], description_file[255], maintainer[128], categories[255], www[255], dependencies[70 * 1024];
 int pos = 0, chunk_pos1 = 0, chunk_pos2 = 0, temp_int1 = 0, temp_int2 = 0, temp_int3 = 0;
 unsigned int package_id = 1;
 FTS *fts_p = NULL;
@@ -886,8 +886,8 @@ int sec_prev = 0;
 			{
 				// empty fields
 				memset (state, '\0', sizeof (state));
-				memset (name, '\0', sizeof (name));
-				memset (version, '\0', sizeof (version));
+				memset (distribution_name, '\0', sizeof (distribution_name));
+				memset (available_version, '\0', sizeof (available_version));
 				memset (installed_version, '\0', sizeof (installed_version));
 				memset (port_path, '\0', sizeof (port_path));
 				memset (comment, '\0', sizeof (comment));
@@ -913,10 +913,10 @@ int sec_prev = 0;
 
 							switch (pos)
 							{
-								// name, version
+								// distribution_name, available_version
 								case 0:
 									strncpy (temp_text1, temp_large_text, sizeof (temp_text1));
-									bsdpm_core_split_packagename_into_name_version (temp_text1, name, version, '-');
+									bsdpm_core_split_packagename_into_name_version (temp_text1, distribution_name, available_version, '-');
 									break;
 								// port_path, state, installed_version
 								case 1:
@@ -932,7 +932,7 @@ int sec_prev = 0;
 											memset (temp_comp_text1[0], '\0', sizeof (temp_comp_text1[0]));
 											memset (temp_comp_text1[1], '\0', sizeof (temp_comp_text1[1]));
 											bsdpm_core_split_packagename_into_name_version (ip[temp_int1]->name, temp_comp_text1[0], temp_comp_text1[1], '-');
-											temp_int2 = version_cmp (version, temp_comp_text1[1]);
+											temp_int2 = version_cmp (available_version, temp_comp_text1[1]);
 											// package is installed?
 											if (temp_int2 == 0)
 											{
@@ -989,9 +989,9 @@ int sec_prev = 0;
 				memset (temp_large_text, '\0', sizeof (temp_large_text));
 				memset (temp_text1, '\0', sizeof (temp_text1));
 				bsdpm_core_encode_string (comment, temp_text1);
-				snprintf (temp_large_text, sizeof (temp_large_text), "INSERT INTO \"%s\" VALUES(%i,'%s','%s','%s','%s','%s','%s','%s','%s','%s','%s');", bsdpm_config.mode_table, package_id, state, name, version, installed_version, port_path, temp_text1, description_file, maintainer, www, dependencies);
+				snprintf (temp_large_text, sizeof (temp_large_text), "INSERT INTO %s VALUES(%i,'%s','%s','%s','%s','%s','%s','%s','%s','%s');", bsdpm_config.mode_table, package_id, state, distribution_name, available_version, installed_version, port_path, temp_text1, description_file, maintainer, www);
 				sqlite3_exec(database, temp_large_text, NULL, NULL, NULL);
-				snprintf (temp_large_text, sizeof (temp_large_text), "INSERT INTO \"dependencies_temp\" VALUES(%i,'%s');", package_id, dependencies);
+				snprintf (temp_large_text, sizeof (temp_large_text), "INSERT INTO dependencies_temp VALUES(%i,'%s');", package_id, dependencies);
 				sqlite3_exec(database, temp_large_text, NULL, NULL, NULL);
 
 				// store categories
@@ -1000,7 +1000,7 @@ int sec_prev = 0;
 					for (token = strtok(categories, " "); token; token = strtok(NULL, " "))
 					{
 						memset (temp_large_text, '\0', sizeof (temp_large_text));
-						snprintf (temp_large_text, sizeof (temp_large_text), "INSERT INTO \"%s_categories\" VALUES(%i, %i);", bsdpm_config.mode_table, package_id, bsdpm_core_get_category_from_word (token));
+						snprintf (temp_large_text, sizeof (temp_large_text), "INSERT INTO %s_categories VALUES(%i, %i);", bsdpm_config.mode_table, package_id, bsdpm_core_get_category_from_word (token));
 						sqlite3_exec(database, temp_large_text, NULL, NULL, NULL);
 					}
 				}
@@ -1085,13 +1085,13 @@ unsigned int total, processed;
             bsdpm_core_split_packagename_into_name_version (sztoken, distribution_name, available_version, '-');
 
             // insert dependency into database
-            snprintf (sql, sizeof (sql), "SELECT id FROM %s WHERE ((distribucion_name = '%s') AND (available_version = '%s'));", bsdpm_config.mode_table, distribution_name, available_version);
+            snprintf (sql, sizeof (sql), "SELECT id FROM %s WHERE ((distribution_name = '%s') AND (available_version = '%s'));", bsdpm_config.mode_table, distribution_name, available_version);
             sqlite3_prepare_v2 (database, sql, sizeof (sql), &statement2, NULL);
             error = sqlite3_step (statement2);
             if (error == SQLITE_ROW)
             {
                 snprintf (sql, sizeof (sql), "INSERT INTO %s_dependencies VALUES(%i, %i);", bsdpm_config.mode_table, sqlite3_column_int (statement1, 0), sqlite3_column_int (statement2, 0));
-                bsdpm_core_database_execute (sql, NULL, NULL);
+                sqlite3_exec(database, sql, NULL, NULL, NULL);
             }
             sqlite3_finalize (statement2);
         }
@@ -1106,12 +1106,12 @@ unsigned int total, processed;
             processed++;
             callback (NULL, total, processed, 0, 0);
         }
-
 	}
 
     // process has finished .. empty unuseful table
-	bsdpm_core_database_execute ("DELETE FROM dependencies_temp;", NULL, NULL);
-	bsdpm_core_database_execute ("COMMIT;", NULL, NULL);
+    sqlite3_exec(database, "DELETE FROM dependencies_temp;", NULL, NULL, NULL);
+    sqlite3_exec(database, "COMMIT;", NULL, NULL, NULL);
+    sqlite3_exec(database, "VACUUM;", NULL, NULL, NULL);
 
 	error = BSDPM_NOERROR;
 

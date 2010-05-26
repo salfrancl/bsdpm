@@ -211,7 +211,7 @@ char message[255];
 			error = bsdpm_core_process_index_file (bsdpm_process_callback);
 			if (error == BSDPM_NOERROR)
 			{
-                printf ("\n  %s...       ", _("Processing DEPENCENCIES"));
+                printf ("\n  %s...       ", _("Processing dependencies"));
                 fflush (stdout);
                 error = bsdpm_core_process_dependencies (bsdpm_process_callback);
                 if (error == BSDPM_NOERROR)
@@ -222,7 +222,7 @@ char message[255];
                     switch (error)
                     {
                         case BSDPM_ERROR_DATABASE_IS_CORRUPT:
-                            printf ("%s: %s.\n", _("Can't process DEPENDENCIES"), _("The database structure is corrupt"));
+                            printf ("%s: %s.\n", _("Can't process dependencies"), _("The database structure is corrupt"));
                             break;
                         default:
                             break;

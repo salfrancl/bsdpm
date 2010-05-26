@@ -103,14 +103,14 @@ msgstr "No se puede descomprimir el archivo INDEX"
 msgid "Processing INDEX file"
 msgstr "Procesando el archivo INDEX"
 
-msgid "Processing DEPENCENCIES"
-msgstr "Procesando DEPENDENCIAS"
+msgid "Processing dependencies"
+msgstr "Procesando las dependencias"
 
 msgid "Can't process INDEX file"
 msgstr "No se puede procesar el archivo INDEX"
 
-msgid "Can't process DEPENDENCIES"
-msgstr "No se pueden procesar las DEPENDENCIAS"
+msgid "Can't process dependencies"
+msgstr "No se pueden procesar las dependencias"
 
 msgid "INDEX file is invalid, there is not access or doesn't exists"
 msgstr "El archivo INDEX es inválido, no tiene acceso o no existe"
