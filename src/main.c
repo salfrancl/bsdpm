@@ -400,6 +400,9 @@ unsigned short pos = 0;
         case BSDPM_INSTALL_OPERATION_STARTING_CHECK_SANITY:
             printf ("  [%s]\n", _("Checking sanity"));
             break;
+        case BSDPM_INSTALL_OPERATION_STARTING_CONFIG_CONDITIONAL:
+            printf ("  [%s]\n", _("Configuring port"));
+            break;
         case BSDPM_INSTALL_OPERATION_STARTING_FETCH:
             printf ("  [%s]\n", _("Fetching"));
             break;

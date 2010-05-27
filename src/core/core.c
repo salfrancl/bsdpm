@@ -1430,7 +1430,7 @@ BSDPM_ERRORS bsdpm_core_install_port (const char *path, bsdpm_core_install_callb
 {
 BSDPM_ERRORS error = BSDPM_NOERROR;
 char buffer1[BUFSIZ * 5], command[BUFSIZ * 5], *lcall;
-// check-sanity fetch checksum extract patch configure build install package clean
+// check-sanity config-conditional fetch checksum extract patch configure build install package clean
 
 	// initialize variables
 	memset (buffer1, '\0', sizeof (buffer1));
@@ -1463,6 +1463,14 @@ char buffer1[BUFSIZ * 5], command[BUFSIZ * 5], *lcall;
 
     // try to execute command
     snprintf (command, sizeof (command), "%s check-sanity", buffer1);
+    error = bsdpm_core_install_execute_command (command, environ, callback);
+
+	// notify operation 'config-conditional'
+	if (callback != NULL)
+		callback (BSDPM_INSTALL_OPERATION_STARTING_CONFIG_CONDITIONAL, NULL);
+
+    // try to execute command
+    snprintf (command, sizeof (command), "%s config-conditional", buffer1);
     error = bsdpm_core_install_execute_command (command, environ, callback);
 
 	// notify operation 'fetch'
@@ -1723,14 +1731,8 @@ char sql[BUFSIZ];
 
 				// if there is not any result then notify and exit
 				if (found == 0)
-				{
 					if (callback != NULL)
 						callback (BSDPM_INSTALL_PORT_NOT_FOUND, danames[pos]);
-
-                    //error = BSDPM_ERROR_INSTALLATION_ERROR;
-                    //free (duplicated);
-                    //goto end;
-				}
 
 				// if there is more than one results then notify
 				if (found == 2)
