@@ -218,7 +218,16 @@ enum _BSDPM_INSTALL_OPERATION {
 	BSDPM_INSTALL_PORT_NOT_FOUND = 0x541,
 	BSDPM_INSTALL_PORT_DUPLICATED = 0x542,
 	BSDPM_INSTALL_OPERATION_STARTING_CHECK_SANITY = 0x543,
-	BSDPM_INSTALL_OPERATION_CHECK_SANITY = 0x544
+	BSDPM_INSTALL_OPERATION_STARTING_FETCH = 0x544,
+	BSDPM_INSTALL_OPERATION_STARTING_CHECKSUM = 0x545,
+	BSDPM_INSTALL_OPERATION_STARTING_EXTRACT = 0x546,
+	BSDPM_INSTALL_OPERATION_STARTING_PATCH = 0x547,
+	BSDPM_INSTALL_OPERATION_STARTING_CONFIGURE = 0x548,
+	BSDPM_INSTALL_OPERATION_STARTING_BUILD = 0x549,
+	BSDPM_INSTALL_OPERATION_STARTING_INSTALL = 0x54A,
+	BSDPM_INSTALL_OPERATION_STARTING_PACKAGE = 0x54B,
+	BSDPM_INSTALL_OPERATION_STARTING_CLEAN = 0x54C,
+	BSDPM_INSTALL_OPERATION_COMMAND_DATA_RECEIVED = 0x54D
 //	BSDPM_INSTALL_OPERATION_CONFIGUREPORTS = 0x541,
 //	BSDPM_INSTALL_OPERATION_GATHERINGDEPENDENCIES = 0x542,
 //	BSDPM_INSTALL_OPERATION_FINISH = 0x152
@@ -310,8 +319,6 @@ BSDPM_ERRORS bsdpm_core_process_index_file (curl_progress_callback callback);
 BSDPM_ERRORS bsdpm_core_process_dependencies (curl_progress_callback callback);
 void bsdpm_core_unlink_packageslist (void);
 BSDPM_ERRORS bsdpm_core_search (const char *search_criteria, bsdpm_core_search_callback callback);
-//short bsdpm_core_install_port (char *const path, bsdpm_core_install_callback);
-//short bsdpm_core_install_package (const char *package, bsdpm_core_install_callback);
 BSDPM_ERRORS bsdpm_core_install (const char *names, bsdpm_core_install_callback);
 //short bsdpm_core_load_package_description (const char *szfile, char *szbuffer);
 

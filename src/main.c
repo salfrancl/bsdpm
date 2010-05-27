@@ -373,6 +373,10 @@ unsigned short pos = 0;
 
 	switch (operation)
 	{
+        case BSDPM_INSTALL_OPERATION_COMMAND_DATA_RECEIVED:
+            printf ("%s", notify_data);
+            fflush (stdout);
+            break;
 		case BSDPM_INSTALL_OPERATION_STARTING:
 			printf ("[%s '%s']\n", _("Starting installation"), notify_data);
 			break;
@@ -396,8 +400,32 @@ unsigned short pos = 0;
         case BSDPM_INSTALL_OPERATION_STARTING_CHECK_SANITY:
             printf ("  [%s]\n", _("Checking sanity"));
             break;
-        case BSDPM_INSTALL_OPERATION_CHECK_SANITY:
-            printf ("%s", notify_data);
+        case BSDPM_INSTALL_OPERATION_STARTING_FETCH:
+            printf ("  [%s]\n", _("Fetching"));
+            break;
+        case BSDPM_INSTALL_OPERATION_STARTING_CHECKSUM:
+            printf ("  [%s]\n", _("Verifying checksum"));
+            break;
+        case BSDPM_INSTALL_OPERATION_STARTING_EXTRACT:
+            printf ("  [%s]\n", _("Extracting"));
+            break;
+        case BSDPM_INSTALL_OPERATION_STARTING_PATCH:
+            printf ("  [%s]\n", _("Patching"));
+            break;
+        case BSDPM_INSTALL_OPERATION_STARTING_CONFIGURE:
+            printf ("  [%s]\n", _("Configuring"));
+            break;
+        case BSDPM_INSTALL_OPERATION_STARTING_BUILD:
+            printf ("  [%s]\n", _("Building"));
+            break;
+        case BSDPM_INSTALL_OPERATION_STARTING_INSTALL:
+            printf ("  [%s]\n", _("Installing"));
+            break;
+        case BSDPM_INSTALL_OPERATION_STARTING_PACKAGE:
+            printf ("  [%s]\n", _("Creating package"));
+            break;
+        case BSDPM_INSTALL_OPERATION_STARTING_CLEAN:
+            printf ("  [%s]\n", _("Cleaning"));
             break;
 /*		case BSDPM_INSTALL_OPERATION_CONFIGUREPORTS:
 			printf ("=> %s\n", _("Configuring all ports options"));
