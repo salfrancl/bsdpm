@@ -1429,11 +1429,20 @@ end:
 BSDPM_ERRORS bsdpm_core_install_port (const char *path, bsdpm_core_install_callback callback)
 {
 BSDPM_ERRORS error = BSDPM_NOERROR;
-char command[BUFSIZ * 5], *lcall;
-// check-sanity fetch checksum extract patch configure build
+char buffer1[BUFSIZ * 5], command[BUFSIZ * 5], *lcall;
+// check-sanity fetch checksum extract patch configure build install package clean
 
 	// initialize variables
+	memset (buffer1, '\0', sizeof (buffer1));
 	memset (command, '\0', sizeof (command));
+
+	// prepare command
+    if (strncmp (path, bsdpm_config.portsdir, 10) == 0)
+    {
+        snprintf (buffer1, sizeof (buffer1), "%s -C %s", bsdpm_config.make_path, path);
+    } else {
+        snprintf (buffer1, sizeof (buffer1), "%s -C %s/%s", bsdpm_config.make_path, bsdpm_config.portsdir, path);
+    }
 
 	// set 'environment' value
 	lcall = getenv ("LC_ALL");
@@ -1453,12 +1462,7 @@ char command[BUFSIZ * 5], *lcall;
 		callback (BSDPM_INSTALL_OPERATION_STARTING_CHECK_SANITY, NULL);
 
     // try to execute command
-    if (strncmp (path, bsdpm_config.portsdir, 10) == 0)
-    {
-        snprintf (command, sizeof (command), "%s -C %s check-sanity", bsdpm_config.make_path, path);
-    } else {
-        snprintf (command, sizeof (command), "%s -C %s/%s check-sanity", bsdpm_config.make_path, bsdpm_config.portsdir, path);
-    }
+    snprintf (command, sizeof (command), "%s check-sanity", buffer1);
     error = bsdpm_core_install_execute_command (command, environ, callback);
 
 	// notify operation 'fetch'
@@ -1466,12 +1470,7 @@ char command[BUFSIZ * 5], *lcall;
 		callback (BSDPM_INSTALL_OPERATION_STARTING_FETCH, NULL);
 
     // try to execute command
-    if (strncmp (path, bsdpm_config.portsdir, 10) == 0)
-    {
-        snprintf (command, sizeof (command), "%s -C %s fetch", bsdpm_config.make_path, path);
-    } else {
-        snprintf (command, sizeof (command), "%s -C %s/%s fetch", bsdpm_config.make_path, bsdpm_config.portsdir, path);
-    }
+    snprintf (command, sizeof (command), "%s fetch", buffer1);
     error = bsdpm_core_install_execute_command (command, environ, callback);
 
 	// notify operation 'checksum'
@@ -1479,12 +1478,7 @@ char command[BUFSIZ * 5], *lcall;
 		callback (BSDPM_INSTALL_OPERATION_STARTING_CHECKSUM, NULL);
 
     // try to execute command
-    if (strncmp (path, bsdpm_config.portsdir, 10) == 0)
-    {
-        snprintf (command, sizeof (command), "%s -C %s checksum", bsdpm_config.make_path, path);
-    } else {
-        snprintf (command, sizeof (command), "%s -C %s/%s checksum", bsdpm_config.make_path, bsdpm_config.portsdir, path);
-    }
+    snprintf (command, sizeof (command), "%s checksum", buffer1);
     error = bsdpm_core_install_execute_command (command, environ, callback);
 
 	// notify operation 'extract'
@@ -1492,12 +1486,7 @@ char command[BUFSIZ * 5], *lcall;
 		callback (BSDPM_INSTALL_OPERATION_STARTING_EXTRACT, NULL);
 
     // try to execute command
-    if (strncmp (path, bsdpm_config.portsdir, 10) == 0)
-    {
-        snprintf (command, sizeof (command), "%s -C %s extract", bsdpm_config.make_path, path);
-    } else {
-        snprintf (command, sizeof (command), "%s -C %s/%s extract", bsdpm_config.make_path, bsdpm_config.portsdir, path);
-    }
+    snprintf (command, sizeof (command), "%s extract", buffer1);
     error = bsdpm_core_install_execute_command (command, environ, callback);
 
 	// notify operation 'patch'
@@ -1505,12 +1494,7 @@ char command[BUFSIZ * 5], *lcall;
 		callback (BSDPM_INSTALL_OPERATION_STARTING_PATCH, NULL);
 
     // try to execute command
-    if (strncmp (path, bsdpm_config.portsdir, 10) == 0)
-    {
-        snprintf (command, sizeof (command), "%s -C %s patch", bsdpm_config.make_path, path);
-    } else {
-        snprintf (command, sizeof (command), "%s -C %s/%s patch", bsdpm_config.make_path, bsdpm_config.portsdir, path);
-    }
+    snprintf (command, sizeof (command), "%s patch", buffer1);
     error = bsdpm_core_install_execute_command (command, environ, callback);
 
 	// notify operation 'configure'
@@ -1518,12 +1502,7 @@ char command[BUFSIZ * 5], *lcall;
 		callback (BSDPM_INSTALL_OPERATION_STARTING_CONFIGURE, NULL);
 
     // try to execute command
-    if (strncmp (path, bsdpm_config.portsdir, 10) == 0)
-    {
-        snprintf (command, sizeof (command), "%s -C %s configure", bsdpm_config.make_path, path);
-    } else {
-        snprintf (command, sizeof (command), "%s -C %s/%s configure", bsdpm_config.make_path, bsdpm_config.portsdir, path);
-    }
+    snprintf (command, sizeof (command), "%s configure", buffer1);
     error = bsdpm_core_install_execute_command (command, environ, callback);
 
 	// notify operation 'build'
@@ -1531,12 +1510,7 @@ char command[BUFSIZ * 5], *lcall;
 		callback (BSDPM_INSTALL_OPERATION_STARTING_BUILD, NULL);
 
     // try to execute command
-    if (strncmp (path, bsdpm_config.portsdir, 10) == 0)
-    {
-        snprintf (command, sizeof (command), "%s -C %s build", bsdpm_config.make_path, path);
-    } else {
-        snprintf (command, sizeof (command), "%s -C %s/%s build", bsdpm_config.make_path, bsdpm_config.portsdir, path);
-    }
+    snprintf (command, sizeof (command), "%s build", buffer1);
     error = bsdpm_core_install_execute_command (command, environ, callback);
 
 	// notify operation 'install'
@@ -1544,12 +1518,7 @@ char command[BUFSIZ * 5], *lcall;
 		callback (BSDPM_INSTALL_OPERATION_STARTING_INSTALL, NULL);
 
     // try to execute command
-    if (strncmp (path, bsdpm_config.portsdir, 10) == 0)
-    {
-        snprintf (command, sizeof (command), "%s -C %s install", bsdpm_config.make_path, path);
-    } else {
-        snprintf (command, sizeof (command), "%s -C %s/%s install", bsdpm_config.make_path, bsdpm_config.portsdir, path);
-    }
+    snprintf (command, sizeof (command), "%s install", buffer1);
     error = bsdpm_core_install_execute_command (command, environ, callback);
 
     // package must to be created?
@@ -1560,12 +1529,7 @@ char command[BUFSIZ * 5], *lcall;
             callback (BSDPM_INSTALL_OPERATION_STARTING_PACKAGE, NULL);
 
         // try to execute command
-        if (strncmp (path, bsdpm_config.portsdir, 10) == 0)
-        {
-            snprintf (command, sizeof (command), "%s -C %s package", bsdpm_config.make_path, path);
-        } else {
-            snprintf (command, sizeof (command), "%s -C %s/%s package", bsdpm_config.make_path, bsdpm_config.portsdir, path);
-        }
+        snprintf (command, sizeof (command), "%s package", buffer1);
         error = bsdpm_core_install_execute_command (command, environ, callback);
     }
 
@@ -1574,12 +1538,7 @@ char command[BUFSIZ * 5], *lcall;
 		callback (BSDPM_INSTALL_OPERATION_STARTING_CLEAN, NULL);
 
     // try to execute command
-    if (strncmp (path, bsdpm_config.portsdir, 10) == 0)
-    {
-        snprintf (command, sizeof (command), "%s -C %s clean", bsdpm_config.make_path, path);
-    } else {
-        snprintf (command, sizeof (command), "%s -C %s/%s clean", bsdpm_config.make_path, bsdpm_config.portsdir, path);
-    }
+    snprintf (command, sizeof (command), "%s clean", buffer1);
     error = bsdpm_core_install_execute_command (command, environ, callback);
 
     // free memory
